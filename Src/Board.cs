@@ -128,7 +128,7 @@ namespace Sudoku
 
 			foreach (var cell in changes)
 			{
-				if (cell.Candidates != 0 && cell.HasSingleCandidate())
+				if (cell.Possibilities == 1)
 					cell.Value = Cell.ToValue(cell.Candidates);
 			}
 			return changes;
@@ -164,7 +164,7 @@ namespace Sudoku
 			{
 				if (cell.Candidates == 0)
 					continue;
-				if (cell.HasSingleCandidate())
+				if (cell.Possibilities == 1)
 					changes.Add(cell);
 			}
 		}
@@ -194,7 +194,7 @@ namespace Sudoku
 					if (last != null)
 					{
 						changes.Add(last);
-						last.SetCandidate(i);
+						last.SetSingleCandidate(i);
 					}
 Label_HiddenSingleContinue:
 					continue;
@@ -210,6 +210,9 @@ Label_HiddenSingleContinue:
 		{
 			foreach (var seg in Segments)
 			{
+				if (seg.FreeCells < 3)
+					continue;
+
 				var dic = GetDictionary_Candidates_int();
 				foreach (var cell in seg)
 				{
@@ -219,6 +222,24 @@ Label_HiddenSingleContinue:
 						dic[cell.Candidates]++;
 					else
 						dic[cell.Candidates] = 1;
+				}
+
+				for (int i = 2; i < seg.FreeCells; i++)
+				{
+					foreach (var pair in dic)
+					{
+						if (pair.Value != i || Cell.CountPossibilities(pair.Key) != i)
+							continue;
+						foreach (var cell in seg)
+						{
+							if (cell.HasValue || cell.Candidates == pair.Key)
+								continue;
+							var old = cell.Candidates;
+							cell.RemoveCandidates(pair.Key);
+							if (cell.Candidates != old)
+								changes.Add(cell);
+						}
+					}
 				}
 			}
 		}

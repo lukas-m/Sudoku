@@ -26,6 +26,21 @@ namespace Sudoku
 
 		private int _value;
 		private Candidates _candidates;
+		private int _possibilities;
+
+		public int Possibilities
+		{
+			get
+			{
+				if (_possibilities < 0)
+					_possibilities = CountPossibilities(Candidates);
+				return _possibilities;
+			}
+			private set
+			{
+				_possibilities = value;
+			}
+		}
 
 		public int Value
 		{
@@ -36,16 +51,18 @@ namespace Sudoku
 			set
 			{
 				if (value < Cell.MinValue || value > Cell.MaxValue)
-					throw new ArgumentException("Invalid value.");
+					throw new ArgumentOutOfRangeException("Invalid value.");
 				if (!HasCandidate(value))
 					throw new InvalidOperationException("Cannot assign this value.");
 				_value = value;
-				_candidates = 0;
+				Candidates = 0;
+				Possibilities = 0;
 				foreach (var seg in Segments.Keys)
 				{
+					seg.FreeCells--;
 					foreach (var cell in seg)
 					{
-						cell.RemoveCandidate(value);
+						cell.RemoveSingleCandidate(value);
 					}
 				}
 			}
@@ -53,16 +70,8 @@ namespace Sudoku
 
 		public Candidates Candidates
 		{
-			get
-			{
-				return _candidates;
-			}
-			set
-			{
-				if (HasValue)
-					throw new InvalidOperationException("Cell has already a value.");
-				_candidates = value;
-			}
+			get { return _candidates; }
+			private set { _candidates = value; }
 		}
 
 		public bool HasValue { get { return _value != 0; } }
@@ -83,32 +92,49 @@ namespace Sudoku
 				return true;
 		}
 
-		public bool HasSingleCandidate()
+		public void RemoveSingleCandidate(int value)
 		{
-			return ToValueInner(Candidates) != 0;
+			if (value < Cell.MinValue || value > Cell.MaxValue)
+				throw new ArgumentOutOfRangeException("Invalid value.");
+			if (HasValue)
+				return;
+			if (!HasCandidate(value))
+				return;
+			Candidates &= ~ToCandidate(value);
+			if (_possibilities > 0)
+				_possibilities--;
 		}
 
-		public void RemoveCandidate(int value)
+		public void RemoveCandidates(Candidates candidates)
 		{
 			if (HasValue)
 				return;
-			_candidates &= ~ToCandidate(value);
+			Candidates &= ~candidates;
+			_possibilities = -1;
 		}
 
-		public void SetCandidate(int value)
+		public void SetSingleCandidate(int value)
 		{
-			Candidates = Cell.ToCandidate(value);
+			if (value < Cell.MinValue || value > Cell.MaxValue)
+				throw new ArgumentOutOfRangeException("Invalid value.");
+			if (HasValue)
+				throw new InvalidOperationException("Cell has already a value.");
+			Candidates = ToCandidate(value);
+			_possibilities = 1;
 		}
 
 		public void Reset()
 		{
+			if (HasValue)
+			{
+				foreach (var seg in Segments.Keys)
+				{
+					seg.FreeCells++;
+				}
+			}
 			_value = 0;
-			_candidates = Cell.AllCandidates;
-		}
-
-		public override string ToString()
-		{
-			return string.Format("{0} ({1:X4})", Value, Candidates);
+			Candidates = Cell.AllCandidates;
+			Possibilities = 1 + MaxValue - MinValue;
 		}
 
 		public static Candidates ToCandidate(int value)
@@ -118,7 +144,6 @@ namespace Sudoku
 
 		public static int ToValue(Candidates value)
 		{
-			CheckSingleValue(value);
 			var val = ToValueInner(value);
 			if (val == 0)
 				throw new InvalidOperationException("Invalid value.");
@@ -147,10 +172,22 @@ namespace Sudoku
 			return ToValue(value).ToString();
 		}
 
-		private static void CheckSingleValue(Candidates value)
+		public override string ToString()
 		{
-			if ((Cell.AllCandidates & value) != value)
-				throw new ArgumentException("Single value required.");
+			return string.Format("{0} ({1})", Value, Candidates);
+		}
+
+		internal static int CountPossibilities(Candidates candidates)
+		{
+			int count = 0;
+			int value = (int)candidates;
+			while (value > 0)
+			{
+				if ((value & 1) == 1)
+					count++;
+				value >>= 1;
+			}
+			return count;
 		}
 	}
 }

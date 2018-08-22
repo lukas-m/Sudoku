@@ -12,11 +12,20 @@ namespace Sudoku
 
 		public int Tag { get; set; }
 
+		public int FreeCells { get; set; }
+		
+		public new void Add(Cell cell)
+		{
+			base.Add(cell);
+			if (!cell.HasValue)
+				FreeCells++;
+		}
+
 		public void Register(Cell cell)
 		{
 			if (cell.Segments.ContainsKey(this))
 				throw new ArgumentException("Segment already contains given cell.");
-			base.Add(cell);
+			Add(cell);
 			_cells.Add(cell, cell);
 			cell.Segments.Add(this, this);
 		}
