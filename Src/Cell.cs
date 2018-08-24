@@ -3,21 +3,6 @@ using System.Collections.Generic;
 
 namespace Sudoku
 {
-	[Flags]
-	public enum Candidates
-	{
-		None = 0,
-		One = 0x0001,
-		Two = 0x0002,
-		Three = 0x0004,
-		Four = 0x0008,
-		Five = 0x0010,
-		Six = 0x0020,
-		Sven = 0x0040,
-		Eight = 0x0080,
-		Nine = 0x0100,
-	}
-
 	public class Cell
 	{
 		public const int MinValue = 1;
@@ -33,7 +18,7 @@ namespace Sudoku
 			get
 			{
 				if (_possibilities < 0)
-					_possibilities = CountPossibilities(Candidates);
+					_possibilities = CandidatesHelper.Count(Candidates);
 				return _possibilities;
 			}
 			private set
@@ -175,19 +160,6 @@ namespace Sudoku
 		public override string ToString()
 		{
 			return string.Format("{0} ({1})", Value, Candidates);
-		}
-
-		internal static int CountPossibilities(Candidates candidates)
-		{
-			int count = 0;
-			int value = (int)candidates;
-			while (value > 0)
-			{
-				if ((value & 1) == 1)
-					count++;
-				value >>= 1;
-			}
-			return count;
 		}
 	}
 }

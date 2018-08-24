@@ -80,7 +80,7 @@ namespace Sudoku
 				return _cache_Candidates_int.Dequeue();
 		}
 
-		private void ReturnDictionary_Candidates_int(Dictionary<Candidates, int> dic)
+		private void AddDictionary_Candidates_int(Dictionary<Candidates, int> dic)
 		{
 			dic.Clear();
 			_cache_Candidates_int.Enqueue(dic);
@@ -208,12 +208,13 @@ Label_HiddenSingleContinue:
 		/// </summary>
 		private void NakedPair(List<Cell> changes)
 		{
+			var dic = GetDictionary_Candidates_int();
 			foreach (var seg in Segments)
 			{
 				if (seg.FreeCells < 3)
 					continue;
 
-				var dic = GetDictionary_Candidates_int();
+				dic.Clear();
 				foreach (var cell in seg)
 				{
 					if (cell.HasValue)
@@ -224,24 +225,24 @@ Label_HiddenSingleContinue:
 						dic[cell.Candidates] = 1;
 				}
 
-				for (int i = 2; i < seg.FreeCells; i++)
+				foreach (var pair in dic)
 				{
-					foreach (var pair in dic)
+					if (pair.Value < 2 || pair.Value >= seg.FreeCells)
+						continue;
+					if (CandidatesHelper.Count(pair.Key) != pair.Value)
+						continue;
+					foreach (var cell in seg)
 					{
-						if (pair.Value != i || Cell.CountPossibilities(pair.Key) != i)
+						if (cell.HasValue || cell.Candidates == pair.Key)
 							continue;
-						foreach (var cell in seg)
-						{
-							if (cell.HasValue || cell.Candidates == pair.Key)
-								continue;
-							var old = cell.Candidates;
-							cell.RemoveCandidates(pair.Key);
-							if (cell.Candidates != old)
-								changes.Add(cell);
-						}
+						var old = cell.Candidates;
+						cell.RemoveCandidates(pair.Key);
+						if (cell.Candidates != old)
+							changes.Add(cell);
 					}
 				}
 			}
+			AddDictionary_Candidates_int(dic);
 		}
 
 		/// <summary>
