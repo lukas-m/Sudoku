@@ -1,2 +1,2 @@
 # Sudoku
-Sudoku solver and generator
+Sudoku solver and generator.
