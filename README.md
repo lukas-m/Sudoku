@@ -1,2 +1,7 @@
 # Sudoku
-Sudoku solver and generator.
+
+This repo will one day contain:
+
+- Human solving algorihtms.
+- Backtracking solving algorithm.
+- Generator.
