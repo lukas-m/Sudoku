@@ -10,8 +10,6 @@ namespace Sudoku
 	{
 		Dictionary<Cell, Cell> _cells = new Dictionary<Cell, Cell>();
 
-		public int Tag { get; set; }
-
 		public int FreeCells { get; set; }
 		
 		public new void Add(Cell cell)

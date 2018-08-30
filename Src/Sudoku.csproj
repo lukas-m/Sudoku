@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="Bits.cs" />
     <Compile Include="Candidates.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="Form1.cs">
