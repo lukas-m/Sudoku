@@ -38,6 +38,8 @@
 			this.textBoxSource = new System.Windows.Forms.TextBox();
 			this.buttonLoad = new System.Windows.Forms.Button();
 			this.buttonSinglePair = new System.Windows.Forms.Button();
+			this.buttonPointingPair = new System.Windows.Forms.Button();
+			this.buttonXReduction = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// panelBoard
@@ -145,11 +147,35 @@
 			this.buttonSinglePair.UseVisualStyleBackColor = true;
 			this.buttonSinglePair.Click += new System.EventHandler(this.buttonSinglePair_Click);
 			// 
+			// buttonPointingPair
+			// 
+			this.buttonPointingPair.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.buttonPointingPair.Location = new System.Drawing.Point(745, 385);
+			this.buttonPointingPair.Name = "buttonPointingPair";
+			this.buttonPointingPair.Size = new System.Drawing.Size(131, 53);
+			this.buttonPointingPair.TabIndex = 10;
+			this.buttonPointingPair.Text = "Pointing Pair";
+			this.buttonPointingPair.UseVisualStyleBackColor = true;
+			this.buttonPointingPair.Click += new System.EventHandler(this.buttonPointingPair_Click);
+			// 
+			// buttonXReduction
+			// 
+			this.buttonXReduction.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.buttonXReduction.Location = new System.Drawing.Point(744, 444);
+			this.buttonXReduction.Name = "buttonXReduction";
+			this.buttonXReduction.Size = new System.Drawing.Size(131, 53);
+			this.buttonXReduction.TabIndex = 11;
+			this.buttonXReduction.Text = "X Reduction";
+			this.buttonXReduction.UseVisualStyleBackColor = true;
+			this.buttonXReduction.Click += new System.EventHandler(this.buttonXReduction_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(888, 784);
+			this.Controls.Add(this.buttonXReduction);
+			this.Controls.Add(this.buttonPointingPair);
 			this.Controls.Add(this.buttonSinglePair);
 			this.Controls.Add(this.buttonLoad);
 			this.Controls.Add(this.textBoxSource);
@@ -181,6 +207,8 @@
 		private System.Windows.Forms.TextBox textBoxSource;
 		private System.Windows.Forms.Button buttonLoad;
 		private System.Windows.Forms.Button buttonSinglePair;
+		private System.Windows.Forms.Button buttonPointingPair;
+		private System.Windows.Forms.Button buttonXReduction;
 	}
 }
 

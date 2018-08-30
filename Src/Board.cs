@@ -116,8 +116,8 @@ namespace Sudoku
 			switch (action)
 			{
 				case BoardAction.None: return changes;
-				case BoardAction.Single: PerformSingle(changes); break;
-				case BoardAction.HiddenSingle: PerformHiddenSingle(changes); break;
+				case BoardAction.Single: Single(changes); break;
+				case BoardAction.HiddenSingle: HiddenSingle(changes); break;
 				case BoardAction.NakedPair: NakedPair(changes); break;
 				case BoardAction.SinglePair: SinglePair(changes); break;
 				case BoardAction.PointingPair: PointingPair(changes); break;
@@ -135,30 +135,10 @@ namespace Sudoku
 		}
 
 		/// <summary>
-		/// . . x | - - - | x . . 
-		/// . . . | x x x | . . . 
-		/// . x . | - - - | . x . 
-		/// </summary>
-		private void XReduction(List<Cell> changes)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// Lets have two segments and its intersection.
-		/// If a candidate is contained in the intersection only for one segment,
-		/// then this candidate can be removed from the other segment (outside the intersection).
-		/// </summary>
-		private void PointingPair(List<Cell> changes)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
 		/// If a cell has single candidate,
 		/// then this cell contains that value.
 		/// </summary>
-		private void PerformSingle(List<Cell> changes)
+		private void Single(List<Cell> changes)
 		{
 			foreach (var cell in _cellsList)
 			{
@@ -173,7 +153,7 @@ namespace Sudoku
 		/// If a segment has a candidate in one cell only,
 		/// then this cell contains that value.
 		/// </summary>
-		private void PerformHiddenSingle(List<Cell> changes)
+		private void HiddenSingle(List<Cell> changes)
 		{
 			foreach (var seg in Segments)
 			{
@@ -229,7 +209,7 @@ Label_HiddenSingleContinue:
 				{
 					if (pair.Value < 2 || pair.Value >= seg.FreeCells)
 						continue;
-					if (CandidatesHelper.Count(pair.Key) != pair.Value)
+					if (Bits.Count(pair.Key) != pair.Value)
 						continue;
 					foreach (var cell in seg)
 					{
@@ -251,46 +231,61 @@ Label_HiddenSingleContinue:
 		/// </summary>
 		private void SinglePair(List<Cell> changes)
 		{
+			var dic = GetDictionary_Candidates_int();
 			foreach (var seg in Segments)
 			{
-				var xxx = new List<Segment>();
+				// todo:
+				throw new NotImplementedException();
+
+				int cells = 0;
 				for (int i = Cell.MinValue; i <= Cell.MaxValue; i++)
 				{
 					var s = new Segment();
-					s.Tag = i;
 					foreach (var cell in seg)
 					{
 						if (cell.HasCandidate(i))
-							s.Add(cell);
+							cells |= i;
 					}
-					xxx.Add(s);
-				}
-
-				for (int len = 2; len < 3; len++)
-				{
-					var correctLength = new List<Segment>();
-					foreach (var s in xxx)
-					{
-						if (s.Count == len)
-							correctLength.Add(s);
-					}
-
-					var matchingSegments = new List<Segment>();
-					for (int i = 0; i < correctLength.Count - 1; i++)
-					{
-						for (int j = i + 1; j < correctLength.Count; j++)
-						{
-							if (correctLength[i].IsEqual(correctLength[j]))
-							{
-								matchingSegments.Add(correctLength[i]);
-								matchingSegments.Add(correctLength[j]);
-							}
-						}
-					}
-
-
+					dic.Add((Candidates)cells, i);
 				}
 			}
+			AddDictionary_Candidates_int(dic);
+		}
+
+		/// <summary>
+		/// Lets have two segments and its intersection.
+		/// If a candidate is contained in the intersection only for one segment,
+		/// then this candidate can be removed from the other segment (outside the intersection).
+		/// Note:
+		/// If intersection is one cell only, then HiddenSingle for this cell can be applied instead.
+		/// </summary>
+		private void PointingPair(List<Cell> changes)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// If a value has only two candidates in one segment (A) and two candidates in other segment (B),
+		/// and there exist two another segments (C and D) intersecting in all those candidates,
+		/// then candidates on (C and D) not in (A and B) can be removed.
+		/// See image below for example:
+		/// 
+		///       A               B
+		///  C: . . x | - - - | x . . 
+		///     . . . | . . . | . . . 
+		///  D: . x . | - - - | . x . 
+		/// 
+		///   Left square is segment A.
+		///   Right square is segment B.
+		///   Top line is segment C.
+		///   Bottom line is segment D.
+		///   Candidates are represented by x.
+		///   Cells, where x candidate can be removed are represented by -.
+		/// 
+		/// </summary>
+		private void XReduction(List<Cell> changes)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

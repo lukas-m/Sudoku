@@ -76,6 +76,8 @@ namespace Sudoku
 			if (!File.Exists(path))
 				return;
 
+			Reset();
+
 			var lines = File.ReadAllLines(path);
 			_board.Load(lines);
 			panelBoard.Refresh();
@@ -83,12 +85,17 @@ namespace Sudoku
 
 		private void buttonReset_Click(object sender, EventArgs e)
 		{
+			Reset();
+			panelBoard.Refresh();
+		}
+
+		private void Reset()
+		{
 			foreach (var pair in _cells)
 			{
 				pair.Key.Reset();
 				pair.Value.BackColor = Color.White;
 			}
-			panelBoard.Refresh();
 		}
 
 		private void buttonGenerate_Click(object sender, EventArgs e)
@@ -108,15 +115,22 @@ namespace Sudoku
 
 		private void Execute(Func<List<Cell>> action)
 		{
+			foreach (var cell in _cells.Values)
+			{
+				cell.BackColor = Color.White;
+				cell.Refresh();
+			}
+
 			while (true)
 			{
 				var changed = action();
+
 				foreach (var cell in changed)
 				{
 					_cells[cell].BackColor = Color.CadetBlue;
+					_cells[cell].Refresh();
 				}
 
-				panelBoard.Refresh();
 				if (checkBoxAutoplay.Checked && changed.Count > 0)
 					Thread.Sleep(500);
 				else
@@ -125,6 +139,7 @@ namespace Sudoku
 				foreach (var cell in changed)
 				{
 					_cells[cell].BackColor = Color.White;
+					_cells[cell].Refresh();
 				}
 			}
 		}
@@ -147,6 +162,16 @@ namespace Sudoku
 		private void buttonSinglePair_Click(object sender, EventArgs e)
 		{
 			Execute(() => _board.Perform(BoardAction.SinglePair));
+		}
+
+		private void buttonPointingPair_Click(object sender, EventArgs e)
+		{
+			Execute(() => _board.Perform(BoardAction.PointingPair));
+		}
+
+		private void buttonXReduction_Click(object sender, EventArgs e)
+		{
+			Execute(() => _board.Perform(BoardAction.XReduction));
 		}
 	}
 }
