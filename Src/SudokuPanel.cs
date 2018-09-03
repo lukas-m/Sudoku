@@ -15,14 +15,14 @@ namespace Sudoku
 
 		public Cell Cell { get; set; }
 
-		public Font NoteFont { get; private set; }
+		public Font CandidateFont { get; private set; }
 		public override Font Font
 		{
-			get => base.Font;
+			get { return base.Font; }
 			set
 			{
 				base.Font = value;
-				NoteFont = new Font(value.FontFamily, value.Size / 3);
+				CandidateFont = new Font(value.FontFamily, value.Size / 3);
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace Sudoku
 					}
 					if (!Cell.HasCandidate(i + 1))
 						continue;
-					e.Graphics.DrawString((i + 1).ToString(), NoteFont, _fore, new RectangleF(x, y, ClientSize.Width / 3, ClientSize.Height / 3), StringFormat.GenericTypographic);
+					e.Graphics.DrawString((i + 1).ToString(), CandidateFont, _fore, new RectangleF(x, y, ClientSize.Width / 3, ClientSize.Height / 3), StringFormat.GenericTypographic);
 				}
 			}
 		}

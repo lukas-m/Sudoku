@@ -20,4 +20,12 @@ namespace Sudoku
 		Eight = 0x0080,
 		Nine = 0x0100,
 	}
+
+	public static class CandidatesHelper
+	{
+		public static int Count(Candidates value)
+		{
+			return Bits.Count((int)value);
+		}
+	}
 }

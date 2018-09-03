@@ -209,7 +209,7 @@ Label_HiddenSingleContinue:
 				{
 					if (pair.Value < 2 || pair.Value >= seg.FreeCells)
 						continue;
-					if (Bits.Count(pair.Key) != pair.Value)
+					if (CandidatesHelper.Count(pair.Key) != pair.Value)
 						continue;
 					foreach (var cell in seg)
 					{
