@@ -11,12 +11,20 @@ namespace Sudoku
 		Dictionary<Cell, Cell> _cells = new Dictionary<Cell, Cell>();
 
 		public int FreeCells { get; set; }
-		
-		public new void Add(Cell cell)
+		public Candidates Values { get; set; }
+
+		public bool HasValue(int value)
+		{
+			return ((Values & CandidatesHelper.ToCandidate(value)) != 0);
+		}
+
+		private new void Add(Cell cell)
 		{
 			base.Add(cell);
 			if (!cell.HasValue)
 				FreeCells++;
+			else
+				Values |= CandidatesHelper.ToCandidate(cell.Value);
 		}
 
 		public void Register(Cell cell)

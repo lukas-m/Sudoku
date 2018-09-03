@@ -23,6 +23,11 @@ namespace Sudoku
 
 	public static class CandidatesHelper
 	{
+		public static Candidates ToCandidate(int value)
+		{
+			return (Candidates)(1 << (value - 1));
+		}
+
 		public static int Count(Candidates value)
 		{
 			return Bits.Count((int)value);

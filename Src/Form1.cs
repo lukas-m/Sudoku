@@ -132,7 +132,7 @@ namespace Sudoku
 				panelBoard.Refresh(); // refresh all due to changes in cells where only candidates were removed
 
 				if (checkBoxAutoplay.Checked && changed.Count > 0)
-					Thread.Sleep(500);
+					Thread.Sleep(50);
 				else
 					break;
 

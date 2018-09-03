@@ -219,27 +219,67 @@ namespace Sudoku
 		/// </summary>
 		private void SinglePair(List<Cell> changes)
 		{
-			using (var cacheItem = _cache.Get<int, int>())
+			using (var cacheItem = _cache.Get<int, SinglePairInfo>())
 			{
-				var dic = cacheItem.Dictionary;
+				var dic = cacheItem.Dictionary; // cells -> count, Candidates
 				foreach (var seg in Segments)
 				{
-					// todo:
-					throw new NotImplementedException();
+					if (seg.FreeCells < 3)
+						continue;
 
-					int cells = 0;
+					dic.Clear();
 					for (int i = Cell.MinValue; i <= Cell.MaxValue; i++)
 					{
-						var s = new Segment();
+						if (seg.HasValue(i))
+							continue;
+
+						List<Cell> cells = new List<Cell>();
+						int cellMask = 0;
+						int mask = 1;
 						foreach (var cell in seg)
 						{
 							if (cell.HasCandidate(i))
-								cells |= i;
+							{
+								cellMask |= mask;
+								cells.Add(cell);
+							}
+							mask <<= 1;
 						}
-						dic.Add(cells, i);
+
+						SinglePairInfo info;
+						if (dic.TryGetValue(cellMask, out info))
+						{
+							info.Count++;
+							info.Candidates |= CandidatesHelper.ToCandidate(i);
+						}
+						else
+						{
+							dic[cellMask] = new SinglePairInfo() { Cells = cells, Count = 1, Candidates = CandidatesHelper.ToCandidate(i) };
+						}
+					}
+
+					foreach (var info in dic.Values)
+					{
+						if (info.Count < 2 || info.Cells.Count != info.Count)
+							continue;
+						foreach (var cell in info.Cells)
+						{
+							if (cell.Possibilities != info.Count)
+							{
+								cell.SetCandidates(info.Candidates);
+								changes.Add(cell);
+							}
+						}
 					}
 				}
 			}
+		}
+
+		private class SinglePairInfo
+		{
+			public List<Cell> Cells { get; set; }
+			public int Count { get; set; }
+			public Candidates Candidates { get; set; }
 		}
 
 		/// <summary>
