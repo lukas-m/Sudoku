@@ -11,21 +11,8 @@ namespace Sudoku
 
 		private int _value;
 		private Candidates _candidates;
-		private int _possibilities;
 
-		public int Possibilities
-		{
-			get
-			{
-				if (_possibilities < 0)
-					_possibilities = CandidatesHelper.Count(Candidates);
-				return _possibilities;
-			}
-			private set
-			{
-				_possibilities = value;
-			}
-		}
+		public int Possibilities { get; private set; }
 
 		public int Value
 		{
@@ -45,6 +32,7 @@ namespace Sudoku
 				foreach (var seg in Segments.Keys)
 				{
 					seg.FreeCells--;
+					seg.Values |= CandidatesHelper.ToCandidate(value);
 					foreach (var cell in seg)
 					{
 						cell.RemoveSingleCandidate(value);
@@ -71,7 +59,7 @@ namespace Sudoku
 
 		public bool HasCandidate(int value)
 		{
-			if (HasValue || (Candidates & ToCandidate(value)) == 0)
+			if (HasValue || (Candidates & CandidatesHelper.ToCandidate(value)) == 0)
 				return false;
 			else
 				return true;
@@ -85,9 +73,8 @@ namespace Sudoku
 				return;
 			if (!HasCandidate(value))
 				return;
-			Candidates &= ~ToCandidate(value);
-			if (_possibilities > 0)
-				_possibilities--;
+			Candidates &= ~CandidatesHelper.ToCandidate(value);
+			Possibilities--;
 		}
 
 		public void RemoveCandidates(Candidates candidates)
@@ -95,7 +82,7 @@ namespace Sudoku
 			if (HasValue)
 				return;
 			Candidates &= ~candidates;
-			_possibilities = -1;
+			Possibilities = CandidatesHelper.Count(Candidates);
 		}
 
 		public void SetSingleCandidate(int value)
@@ -104,8 +91,18 @@ namespace Sudoku
 				throw new ArgumentOutOfRangeException("Invalid value.");
 			if (HasValue)
 				throw new InvalidOperationException("Cell has already a value.");
-			Candidates = ToCandidate(value);
-			_possibilities = 1;
+			Candidates = CandidatesHelper.ToCandidate(value);
+			Possibilities = 1;
+		}
+
+		public void SetCandidates(Candidates candidates)
+		{
+			if (HasValue)
+				throw new InvalidOperationException("Cell has already a value.");
+			if ((Candidates | candidates) != Candidates)
+				throw new InvalidOperationException("Cannot add new candidates.");
+			Candidates = candidates;
+			Possibilities = CandidatesHelper.Count(Candidates);
 		}
 
 		public void Reset()
@@ -115,16 +112,12 @@ namespace Sudoku
 				foreach (var seg in Segments.Keys)
 				{
 					seg.FreeCells++;
+					seg.Values &= ~CandidatesHelper.ToCandidate(Value);
 				}
 			}
 			_value = 0;
 			Candidates = Cell.AllCandidates;
-			Possibilities = 1 + MaxValue - MinValue;
-		}
-
-		public static Candidates ToCandidate(int value)
-		{
-			return (Candidates)(1 << (value - 1));
+			Possibilities = CandidatesHelper.Count(Candidates);
 		}
 
 		public static int ToValue(Candidates value)
