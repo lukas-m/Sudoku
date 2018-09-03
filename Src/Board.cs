@@ -23,7 +23,7 @@ namespace Sudoku
 		private Cell[,] _cells;
 		private List<Cell> _cellsList;
 
-		private Queue<Dictionary<Candidates, int>> _cache_Candidates_int = new Queue<Dictionary<Candidates, int>>();
+		private DictionaryCache _cache = new DictionaryCache();
 
 		public List<Segment> Segments { get; private set; }
 
@@ -70,20 +70,6 @@ namespace Sudoku
 					Segments.Add(square);
 				}
 			}
-		}
-
-		private Dictionary<Candidates, int> GetDictionary_Candidates_int()
-		{
-			if (_cache_Candidates_int.Count == 0)
-				return new Dictionary<Candidates, int>();
-			else
-				return _cache_Candidates_int.Dequeue();
-		}
-
-		private void AddDictionary_Candidates_int(Dictionary<Candidates, int> dic)
-		{
-			dic.Clear();
-			_cache_Candidates_int.Enqueue(dic);
 		}
 
 		public void Load(string[] lines)
@@ -176,7 +162,7 @@ namespace Sudoku
 						changes.Add(last);
 						last.SetSingleCandidate(i);
 					}
-Label_HiddenSingleContinue:
+				Label_HiddenSingleContinue:
 					continue;
 				}
 			}
@@ -188,41 +174,43 @@ Label_HiddenSingleContinue:
 		/// </summary>
 		private void NakedPair(List<Cell> changes)
 		{
-			var dic = GetDictionary_Candidates_int();
-			foreach (var seg in Segments)
+			using (var cacheItem = _cache.Get<Candidates, int>())
 			{
-				if (seg.FreeCells < 3)
-					continue;
-
-				dic.Clear();
-				foreach (var cell in seg)
+				var dic = cacheItem.Dictionary;
+				foreach (var seg in Segments)
 				{
-					if (cell.HasValue)
+					if (seg.FreeCells < 3)
 						continue;
-					if (dic.ContainsKey(cell.Candidates))
-						dic[cell.Candidates]++;
-					else
-						dic[cell.Candidates] = 1;
-				}
 
-				foreach (var pair in dic)
-				{
-					if (pair.Value < 2 || pair.Value >= seg.FreeCells)
-						continue;
-					if (CandidatesHelper.Count(pair.Key) != pair.Value)
-						continue;
+					dic.Clear();
 					foreach (var cell in seg)
 					{
-						if (cell.HasValue || cell.Candidates == pair.Key)
+						if (cell.HasValue)
 							continue;
-						var old = cell.Candidates;
-						cell.RemoveCandidates(pair.Key);
-						if (cell.Candidates != old)
-							changes.Add(cell);
+						if (dic.ContainsKey(cell.Candidates))
+							dic[cell.Candidates]++;
+						else
+							dic[cell.Candidates] = 1;
+					}
+
+					foreach (var pair in dic)
+					{
+						if (pair.Value < 2 || pair.Value >= seg.FreeCells)
+							continue;
+						if (CandidatesHelper.Count(pair.Key) != pair.Value)
+							continue;
+						foreach (var cell in seg)
+						{
+							if (cell.HasValue || cell.Candidates == pair.Key)
+								continue;
+							var old = cell.Candidates;
+							cell.RemoveCandidates(pair.Key);
+							if (cell.Candidates != old)
+								changes.Add(cell);
+						}
 					}
 				}
 			}
-			AddDictionary_Candidates_int(dic);
 		}
 
 		/// <summary>
@@ -231,25 +219,27 @@ Label_HiddenSingleContinue:
 		/// </summary>
 		private void SinglePair(List<Cell> changes)
 		{
-			var dic = GetDictionary_Candidates_int();
-			foreach (var seg in Segments)
+			using (var cacheItem = _cache.Get<int, int>())
 			{
-				// todo:
-				throw new NotImplementedException();
-
-				int cells = 0;
-				for (int i = Cell.MinValue; i <= Cell.MaxValue; i++)
+				var dic = cacheItem.Dictionary;
+				foreach (var seg in Segments)
 				{
-					var s = new Segment();
-					foreach (var cell in seg)
+					// todo:
+					throw new NotImplementedException();
+
+					int cells = 0;
+					for (int i = Cell.MinValue; i <= Cell.MaxValue; i++)
 					{
-						if (cell.HasCandidate(i))
-							cells |= i;
+						var s = new Segment();
+						foreach (var cell in seg)
+						{
+							if (cell.HasCandidate(i))
+								cells |= i;
+						}
+						dic.Add(cells, i);
 					}
-					dic.Add((Candidates)cells, i);
 				}
 			}
-			AddDictionary_Candidates_int(dic);
 		}
 
 		/// <summary>
