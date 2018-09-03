@@ -18,7 +18,7 @@ namespace Sudoku
 			get
 			{
 				if (_possibilities < 0)
-					_possibilities = Bits.Count(Candidates);
+					_possibilities = CandidatesHelper.Count(Candidates);
 				return _possibilities;
 			}
 			private set

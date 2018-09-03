@@ -94,7 +94,7 @@
 			this.buttonSingle.TabIndex = 4;
 			this.buttonSingle.Text = "Single";
 			this.buttonSingle.UseVisualStyleBackColor = true;
-			this.buttonSingle.Click += new System.EventHandler(this.buttonOnlyOneNote_Click);
+			this.buttonSingle.Click += new System.EventHandler(this.buttonSingle_Click);
 			// 
 			// buttonHiddenSingle
 			// 
@@ -105,7 +105,7 @@
 			this.buttonHiddenSingle.TabIndex = 5;
 			this.buttonHiddenSingle.Text = "Hidden single";
 			this.buttonHiddenSingle.UseVisualStyleBackColor = true;
-			this.buttonHiddenSingle.Click += new System.EventHandler(this.buttonOnlyOneInLine_Click);
+			this.buttonHiddenSingle.Click += new System.EventHandler(this.buttonHiddenSingle_Click);
 			// 
 			// buttonNakedPair
 			// 
@@ -124,7 +124,7 @@
 			this.textBoxSource.Name = "textBoxSource";
 			this.textBoxSource.Size = new System.Drawing.Size(644, 20);
 			this.textBoxSource.TabIndex = 7;
-			this.textBoxSource.Text = "source.txt";
+			this.textBoxSource.Text = "../../../source.txt";
 			// 
 			// buttonLoad
 			// 

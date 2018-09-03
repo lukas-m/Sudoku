@@ -22,11 +22,6 @@ namespace Sudoku
 			}
 		}
 
-		public static int Count(Candidates candidates)
-		{
-			return Counts[(int)candidates];
-		}
-
 		public static int Count(int value)
 		{
 			if (value == 0)

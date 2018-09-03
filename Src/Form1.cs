@@ -128,8 +128,8 @@ namespace Sudoku
 				foreach (var cell in changed)
 				{
 					_cells[cell].BackColor = Color.CadetBlue;
-					_cells[cell].Refresh();
-				}
+				} 
+				panelBoard.Refresh(); // refresh all due to changes in cells where only candidates were removed
 
 				if (checkBoxAutoplay.Checked && changed.Count > 0)
 					Thread.Sleep(500);
@@ -144,12 +144,12 @@ namespace Sudoku
 			}
 		}
 
-		private void buttonOnlyOneNote_Click(object sender, EventArgs e)
+		private void buttonSingle_Click(object sender, EventArgs e)
 		{
 			Execute(() => _board.Perform(BoardAction.Single));
 		}
 
-		private void buttonOnlyOneInLine_Click(object sender, EventArgs e)
+		private void buttonHiddenSingle_Click(object sender, EventArgs e)
 		{
 			Execute(() => _board.Perform(BoardAction.HiddenSingle));
 		}
