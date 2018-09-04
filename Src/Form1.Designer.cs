@@ -32,14 +32,13 @@
 			this.buttonReset = new System.Windows.Forms.Button();
 			this.buttonGenerate = new System.Windows.Forms.Button();
 			this.checkBoxAutoplay = new System.Windows.Forms.CheckBox();
-			this.buttonSingle = new System.Windows.Forms.Button();
+			this.buttonNakedSingle = new System.Windows.Forms.Button();
 			this.buttonHiddenSingle = new System.Windows.Forms.Button();
 			this.buttonNakedPair = new System.Windows.Forms.Button();
 			this.textBoxSource = new System.Windows.Forms.TextBox();
 			this.buttonLoad = new System.Windows.Forms.Button();
 			this.buttonSinglePair = new System.Windows.Forms.Button();
 			this.buttonPointingPair = new System.Windows.Forms.Button();
-			this.buttonXReduction = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// panelBoard
@@ -85,16 +84,16 @@
 			this.checkBoxAutoplay.Text = "Autoplay";
 			this.checkBoxAutoplay.UseVisualStyleBackColor = true;
 			// 
-			// buttonSingle
+			// buttonNakedSingle
 			// 
-			this.buttonSingle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.buttonSingle.Location = new System.Drawing.Point(745, 149);
-			this.buttonSingle.Name = "buttonSingle";
-			this.buttonSingle.Size = new System.Drawing.Size(131, 53);
-			this.buttonSingle.TabIndex = 4;
-			this.buttonSingle.Text = "Single";
-			this.buttonSingle.UseVisualStyleBackColor = true;
-			this.buttonSingle.Click += new System.EventHandler(this.buttonSingle_Click);
+			this.buttonNakedSingle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.buttonNakedSingle.Location = new System.Drawing.Point(745, 149);
+			this.buttonNakedSingle.Name = "buttonNakedSingle";
+			this.buttonNakedSingle.Size = new System.Drawing.Size(131, 53);
+			this.buttonNakedSingle.TabIndex = 4;
+			this.buttonNakedSingle.Text = "Naked Single";
+			this.buttonNakedSingle.UseVisualStyleBackColor = true;
+			this.buttonNakedSingle.Click += new System.EventHandler(this.buttonNakedSingle_Click);
 			// 
 			// buttonHiddenSingle
 			// 
@@ -103,7 +102,7 @@
 			this.buttonHiddenSingle.Name = "buttonHiddenSingle";
 			this.buttonHiddenSingle.Size = new System.Drawing.Size(131, 53);
 			this.buttonHiddenSingle.TabIndex = 5;
-			this.buttonHiddenSingle.Text = "Hidden single";
+			this.buttonHiddenSingle.Text = "Hidden Single";
 			this.buttonHiddenSingle.UseVisualStyleBackColor = true;
 			this.buttonHiddenSingle.Click += new System.EventHandler(this.buttonHiddenSingle_Click);
 			// 
@@ -158,30 +157,18 @@
 			this.buttonPointingPair.UseVisualStyleBackColor = true;
 			this.buttonPointingPair.Click += new System.EventHandler(this.buttonPointingPair_Click);
 			// 
-			// buttonXReduction
-			// 
-			this.buttonXReduction.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.buttonXReduction.Location = new System.Drawing.Point(744, 444);
-			this.buttonXReduction.Name = "buttonXReduction";
-			this.buttonXReduction.Size = new System.Drawing.Size(131, 53);
-			this.buttonXReduction.TabIndex = 11;
-			this.buttonXReduction.Text = "X Reduction";
-			this.buttonXReduction.UseVisualStyleBackColor = true;
-			this.buttonXReduction.Click += new System.EventHandler(this.buttonXReduction_Click);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(888, 784);
-			this.Controls.Add(this.buttonXReduction);
 			this.Controls.Add(this.buttonPointingPair);
 			this.Controls.Add(this.buttonSinglePair);
 			this.Controls.Add(this.buttonLoad);
 			this.Controls.Add(this.textBoxSource);
 			this.Controls.Add(this.buttonNakedPair);
 			this.Controls.Add(this.buttonHiddenSingle);
-			this.Controls.Add(this.buttonSingle);
+			this.Controls.Add(this.buttonNakedSingle);
 			this.Controls.Add(this.checkBoxAutoplay);
 			this.Controls.Add(this.buttonGenerate);
 			this.Controls.Add(this.buttonReset);
@@ -201,14 +188,13 @@
 		private System.Windows.Forms.Button buttonReset;
 		private System.Windows.Forms.Button buttonGenerate;
 		private System.Windows.Forms.CheckBox checkBoxAutoplay;
-		private System.Windows.Forms.Button buttonSingle;
+		private System.Windows.Forms.Button buttonNakedSingle;
 		private System.Windows.Forms.Button buttonHiddenSingle;
 		private System.Windows.Forms.Button buttonNakedPair;
 		private System.Windows.Forms.TextBox textBoxSource;
 		private System.Windows.Forms.Button buttonLoad;
 		private System.Windows.Forms.Button buttonSinglePair;
 		private System.Windows.Forms.Button buttonPointingPair;
-		private System.Windows.Forms.Button buttonXReduction;
 	}
 }
 

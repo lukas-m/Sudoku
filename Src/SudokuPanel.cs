@@ -10,10 +10,19 @@ namespace Sudoku
 {
 	public class SudokuPanel : Panel
 	{
-		private Brush _fore;
-		private Action _refresh;
+		public enum Colors
+		{
+			Basic = 0,
+			Focus = 1,
+			Changed = 2,
+		}
 
-		public Cell Cell { get; set; }
+		private Brush _fore;
+		private bool _focused;
+
+		public EventHandler Changed;
+
+		public Cell Cell { get; private set; }
 
 		public Font CandidateFont { get; private set; }
 		public override Font Font
@@ -26,11 +35,69 @@ namespace Sudoku
 			}
 		}
 
-		public SudokuPanel(Action refresh)
+		public SudokuPanel(Cell cell)
 		{
-			Font = Font;
-			_refresh = refresh;
 			_fore = Brushes.Black;
+			Font = Font;
+			Cell = cell;
+			cell.Changed += (s, e) => OnChanged();
+		}
+
+		private void OnChanged()
+		{
+			var h = Changed;
+			if (h != null)
+				h(this, EventArgs.Empty);
+		}
+
+		public void SetColor(Colors color)
+		{
+			var oldFore = _fore;
+			var oldBack = BackColor;
+			switch (color)
+			{
+				case Colors.Basic:
+					if (_focused)
+					{
+						if (Cell.IsFixed)
+						{
+							BackColor = Color.Blue;
+							_fore = Brushes.LightBlue;
+						}
+						else
+						{
+							BackColor = Color.Blue;
+							_fore = Brushes.White;
+						}
+					}
+					else
+					{
+						if (Cell.IsFixed)
+						{
+							BackColor = Color.White;
+							_fore = Brushes.Navy;
+						}
+						else
+						{
+							BackColor = Color.White;
+							_fore = Brushes.Black;
+						}
+					}
+					break;
+
+				case Colors.Changed:
+					BackColor = Color.CadetBlue;
+					break;
+
+				default:
+					BackColor = Color.White;
+					_fore = Brushes.Black;
+					break;
+			}
+			if (oldFore != _fore || oldBack != BackColor)
+			{
+				OnChanged();
+			}
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
@@ -73,15 +140,15 @@ namespace Sudoku
 		protected override void OnGotFocus(EventArgs e)
 		{
 			base.OnGotFocus(e);
-			BackColor = Color.Blue;
-			_fore = Brushes.White;
+			_focused = true;
+			SetColor(Colors.Basic);
 		}
 
 		protected override void OnLostFocus(EventArgs e)
 		{
 			base.OnLostFocus(e);
-			BackColor = Color.White;
-			_fore = Brushes.Black;
+			_focused = false;
+			SetColor(Colors.Basic);
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -100,7 +167,6 @@ namespace Sudoku
 			if (value > 0 && Cell.HasCandidate(value))
 			{
 				Cell.Value = value;
-				_refresh();
 			}
 		}
 	}
