@@ -2,8 +2,8 @@
 
 Contains:
 
-- 4 human solving algorihtms.
-- 2 backtracking solving algorithm **coming soon**.
+- Four human solving algorihtms (**other coming soon**).
+- Backtracking solving algorithm **coming soon**.
 
 All algorithms are implemented for general sudoku (not only 9x9).
 
