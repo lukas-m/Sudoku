@@ -5,8 +5,7 @@ Contains:
 - 4 human solving algorihtms.
 - 2 backtracking solving algorithm **coming soon**.
 
-*Note: All algorithms are implemented for general sudoku (not only 9x9).*  
-*Note: Algorithm names are mostly taken from great site: http://www.sudokuwiki.org/Strategy_Families*
+All algorithms are implemented for general sudoku (not only 9x9).
 
 **Human solving algorihtms**
 
@@ -14,3 +13,5 @@ Contains:
 - Hidden singles / Eyeballing
 - Naked pairs
 - Hidden pairs
+
+*Note: Algorithm names are mostly taken from great site: http://www.sudokuwiki.org/Strategy_Families*
