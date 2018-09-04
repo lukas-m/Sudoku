@@ -15,8 +15,8 @@ namespace Sudoku
 	public partial class Form1 : Form
 	{
 		Board _board;
-
 		Dictionary<Cell, SudokuPanel> _cells;
+		bool _refreshDisabled;
 
 		public Form1()
 		{
@@ -39,13 +39,13 @@ namespace Sudoku
 					if (j > 0 && j % 3 == 0)
 						dy += 2;
 
-					var p = new SudokuPanel(panelBoard.Refresh);
+					var p = new SudokuPanel(new Cell());
 					p.BorderStyle = BorderStyle.FixedSingle;
 					p.BackColor = Color.White;
 					p.Size = new Size(80, 80);
 					p.Location = new Point(dx + i * 80, dy + j * 80);
 					p.Font = new Font(FontFamily.GenericSansSerif, 40);
-					p.Cell = new Cell();
+					p.Changed += PanelChanged;
 
 					panelBoard.Controls.Add(p);
 					cells[i, j] = p.Cell;
@@ -70,23 +70,37 @@ namespace Sudoku
 			//}
 		}
 
+		private void PanelChanged(object sender, EventArgs e)
+		{
+			if (_refreshDisabled)
+				return;
+			var p = (SudokuPanel)sender;
+			p.Refresh();
+		}
+
 		private void buttonLoad_Click(object sender, EventArgs e)
 		{
 			string path = textBoxSource.Text;
 			if (!File.Exists(path))
 				return;
 
-			Reset();
-
-			var lines = File.ReadAllLines(path);
-			_board.Load(lines);
-			panelBoard.Refresh();
+			_refreshDisabled = true;
+			try
+			{
+				Reset();
+				var lines = File.ReadAllLines(path);
+				_board.Load(lines);
+				panelBoard.Refresh();
+			}
+			finally
+			{
+				_refreshDisabled = false;
+			}
 		}
 
 		private void buttonReset_Click(object sender, EventArgs e)
 		{
 			Reset();
-			panelBoard.Refresh();
 		}
 
 		private void Reset()
@@ -94,7 +108,7 @@ namespace Sudoku
 			foreach (var pair in _cells)
 			{
 				pair.Key.Reset();
-				pair.Value.BackColor = Color.White;
+				pair.Value.SetColor(SudokuPanel.Colors.Basic);
 			}
 		}
 
@@ -117,8 +131,7 @@ namespace Sudoku
 		{
 			foreach (var cell in _cells.Values)
 			{
-				cell.BackColor = Color.White;
-				cell.Refresh();
+				cell.SetColor(SudokuPanel.Colors.Basic); 
 			}
 
 			while (true)
@@ -127,9 +140,13 @@ namespace Sudoku
 
 				foreach (var cell in changed)
 				{
-					_cells[cell].BackColor = Color.CadetBlue;
-				} 
-				panelBoard.Refresh(); // refresh all due to changes in cells where only candidates were removed
+					_cells[cell].SetColor(SudokuPanel.Colors.Changed); 
+				}
+				if (changed.Count > 0)
+				{
+					// refresh all due to possible changes in cells where candidates were removed in reaction to changed cells
+					panelBoard.Refresh();
+				}
 
 				if (checkBoxAutoplay.Checked && changed.Count > 0)
 					Thread.Sleep(50);
@@ -138,15 +155,14 @@ namespace Sudoku
 
 				foreach (var cell in changed)
 				{
-					_cells[cell].BackColor = Color.White;
-					_cells[cell].Refresh();
+					_cells[cell].SetColor(SudokuPanel.Colors.Basic);
 				}
 			}
 		}
 
-		private void buttonSingle_Click(object sender, EventArgs e)
+		private void buttonNakedSingle_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.Single));
+			Execute(() => _board.Perform(BoardAction.NakedSingle));
 		}
 
 		private void buttonHiddenSingle_Click(object sender, EventArgs e)
@@ -167,11 +183,6 @@ namespace Sudoku
 		private void buttonPointingPair_Click(object sender, EventArgs e)
 		{
 			Execute(() => _board.Perform(BoardAction.PointingPair));
-		}
-
-		private void buttonXReduction_Click(object sender, EventArgs e)
-		{
-			Execute(() => _board.Perform(BoardAction.XReduction));
 		}
 	}
 }

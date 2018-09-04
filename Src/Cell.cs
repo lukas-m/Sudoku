@@ -9,8 +9,12 @@ namespace Sudoku
 		public const int MaxValue = 9;
 		public const Candidates AllCandidates = (Candidates)0x01FF;
 
+		public EventHandler Changed;
+
 		private int _value;
 		private Candidates _candidates;
+
+		public bool IsFixed { get; set; }
 
 		public int Possibilities { get; private set; }
 
@@ -38,6 +42,7 @@ namespace Sudoku
 						cell.RemoveSingleCandidate(value);
 					}
 				}
+				OnChanged();
 			}
 		}
 
@@ -55,6 +60,13 @@ namespace Sudoku
 		{
 			Segments = new Dictionary<Segment, Segment>();
 			Reset();
+		}
+
+		private void OnChanged()
+		{
+			var h = Changed;
+			if (h != null)
+				h(this, EventArgs.Empty);
 		}
 
 		public bool HasCandidate(int value)
@@ -75,6 +87,7 @@ namespace Sudoku
 				return;
 			Candidates &= ~CandidatesHelper.ToCandidate(value);
 			Possibilities--;
+			OnChanged();
 		}
 
 		public void RemoveCandidates(Candidates candidates)
@@ -83,6 +96,7 @@ namespace Sudoku
 				return;
 			Candidates &= ~candidates;
 			Possibilities = CandidatesHelper.Count(Candidates);
+			OnChanged();
 		}
 
 		public void SetSingleCandidate(int value)
@@ -93,6 +107,7 @@ namespace Sudoku
 				throw new InvalidOperationException("Cell has already a value.");
 			Candidates = CandidatesHelper.ToCandidate(value);
 			Possibilities = 1;
+			OnChanged();
 		}
 
 		public void SetCandidates(Candidates candidates)
@@ -103,6 +118,7 @@ namespace Sudoku
 				throw new InvalidOperationException("Cannot add new candidates.");
 			Candidates = candidates;
 			Possibilities = CandidatesHelper.Count(Candidates);
+			OnChanged();
 		}
 
 		public void Reset()
@@ -118,6 +134,7 @@ namespace Sudoku
 			_value = 0;
 			Candidates = Cell.AllCandidates;
 			Possibilities = CandidatesHelper.Count(Candidates);
+			OnChanged();
 		}
 
 		public static int ToValue(Candidates value)

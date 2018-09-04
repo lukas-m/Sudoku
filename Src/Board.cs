@@ -10,12 +10,11 @@ namespace Sudoku
 	public enum BoardAction
 	{
 		None = 0,
-		Single = 0x1,
+		NakedSingle = 0x1,
 		HiddenSingle = 0x2,
 		NakedPair = 0x4,
 		SinglePair = 0x8,
 		PointingPair = 0x10,
-		XReduction = 0x20,
 	}
 
 	public class Board
@@ -102,12 +101,11 @@ namespace Sudoku
 			switch (action)
 			{
 				case BoardAction.None: return changes;
-				case BoardAction.Single: Single(changes); break;
+				case BoardAction.NakedSingle: Single(changes); break;
 				case BoardAction.HiddenSingle: HiddenSingle(changes); break;
 				case BoardAction.NakedPair: NakedPair(changes); break;
 				case BoardAction.SinglePair: SinglePair(changes); break;
 				case BoardAction.PointingPair: PointingPair(changes); break;
-				case BoardAction.XReduction: XReduction(changes); break;
 				default:
 					throw new ArgumentOutOfRangeException("action");
 			}
@@ -290,30 +288,6 @@ namespace Sudoku
 		/// If intersection is one cell only, then HiddenSingle for this cell can be applied instead.
 		/// </summary>
 		private void PointingPair(List<Cell> changes)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// If a value has only two candidates in one segment (A) and two candidates in other segment (B),
-		/// and there exist two another segments (C and D) intersecting in all those candidates,
-		/// then candidates on (C and D) not in (A and B) can be removed.
-		/// See image below for example:
-		/// 
-		///       A               B
-		///  C: . . x | - - - | x . . 
-		///     . . . | . . . | . . . 
-		///  D: . x . | - - - | . x . 
-		/// 
-		///   Left square is segment A.
-		///   Right square is segment B.
-		///   Top line is segment C.
-		///   Bottom line is segment D.
-		///   Candidates are represented by x.
-		///   Cells, where x candidate can be removed are represented by -.
-		/// 
-		/// </summary>
-		private void XReduction(List<Cell> changes)
 		{
 			throw new NotImplementedException();
 		}
