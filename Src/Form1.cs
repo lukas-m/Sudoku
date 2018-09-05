@@ -54,20 +54,6 @@ namespace Sudoku
 			}
 
 			_board = new Board(cells);
-
-			//foreach (var line in _board.Lines)
-			//{
-			//	foreach (var cell in line)
-			//	{
-			//		_cells[cell].BackColor = Color.Red;
-			//	}
-			//	panelBoard.Update();
-			//	Thread.Sleep(500);
-			//	foreach (var cell in line)
-			//	{
-			//		_cells[cell].BackColor = Color.White;
-			//	}
-			//}
 		}
 
 		private void PanelChanged(object sender, EventArgs e)
@@ -129,6 +115,8 @@ namespace Sudoku
 			while (true)
 			{
 				var changed = action();
+				if (changed == null)
+					return;
 
 				foreach (var cell in changed)
 				{
@@ -136,9 +124,9 @@ namespace Sudoku
 				}
 
 				if (checkBoxAutoplay.Checked && changed.Count > 0)
-					Thread.Sleep(200);
+					Thread.Sleep(500);
 				else
-					break;
+					return;
 
 				foreach (var cell in changed)
 				{
@@ -149,15 +137,15 @@ namespace Sudoku
 
 		private void buttonBacktracking_Click(object sender, EventArgs e)
 		{
-			foreach (var cell in _cells.Values)
+			Execute(() =>
 			{
-				cell.SetColor(SudokuPanel.Colors.Basic);
-			}
-			bool found = _board.Backtracking();
-			if (found)
-				panelBoard.Refresh();
-			else
-				MessageBox.Show("No solution found.");
+				bool found = _board.Backtracking();
+				if (found)
+					panelBoard.Refresh();
+				else
+					MessageBox.Show("No solution found.");
+				return null;
+			});
 		}
 
 		private void buttonNakedSingle_Click(object sender, EventArgs e)
