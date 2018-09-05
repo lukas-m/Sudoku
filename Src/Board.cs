@@ -158,7 +158,7 @@ namespace Sudoku
 						return false;
 					}
 				}
-				return false;
+				return true;
 			}
 			finally
 			{
