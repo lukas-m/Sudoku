@@ -30,7 +30,7 @@
 		{
 			this.panelBoard = new System.Windows.Forms.Panel();
 			this.buttonReset = new System.Windows.Forms.Button();
-			this.buttonGenerate = new System.Windows.Forms.Button();
+			this.buttonBacktracking = new System.Windows.Forms.Button();
 			this.checkBoxAutoplay = new System.Windows.Forms.CheckBox();
 			this.buttonNakedSingle = new System.Windows.Forms.Button();
 			this.buttonHiddenSingle = new System.Windows.Forms.Button();
@@ -61,16 +61,16 @@
 			this.buttonReset.UseVisualStyleBackColor = true;
 			this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
 			// 
-			// buttonGenerate
+			// buttonBacktracking
 			// 
-			this.buttonGenerate.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.buttonGenerate.Location = new System.Drawing.Point(744, 71);
-			this.buttonGenerate.Name = "buttonGenerate";
-			this.buttonGenerate.Size = new System.Drawing.Size(131, 53);
-			this.buttonGenerate.TabIndex = 2;
-			this.buttonGenerate.Text = "Generate";
-			this.buttonGenerate.UseVisualStyleBackColor = true;
-			this.buttonGenerate.Click += new System.EventHandler(this.buttonGenerate_Click);
+			this.buttonBacktracking.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.buttonBacktracking.Location = new System.Drawing.Point(744, 71);
+			this.buttonBacktracking.Name = "buttonBacktracking";
+			this.buttonBacktracking.Size = new System.Drawing.Size(131, 53);
+			this.buttonBacktracking.TabIndex = 2;
+			this.buttonBacktracking.Text = "Backtracking";
+			this.buttonBacktracking.UseVisualStyleBackColor = true;
+			this.buttonBacktracking.Click += new System.EventHandler(this.buttonBacktracking_Click);
 			// 
 			// checkBoxAutoplay
 			// 
@@ -170,7 +170,7 @@
 			this.Controls.Add(this.buttonHiddenSingle);
 			this.Controls.Add(this.buttonNakedSingle);
 			this.Controls.Add(this.checkBoxAutoplay);
-			this.Controls.Add(this.buttonGenerate);
+			this.Controls.Add(this.buttonBacktracking);
 			this.Controls.Add(this.buttonReset);
 			this.Controls.Add(this.panelBoard);
 			this.Name = "Form1";
@@ -186,7 +186,7 @@
 
 		private System.Windows.Forms.Panel panelBoard;
 		private System.Windows.Forms.Button buttonReset;
-		private System.Windows.Forms.Button buttonGenerate;
+		private System.Windows.Forms.Button buttonBacktracking;
 		private System.Windows.Forms.CheckBox checkBoxAutoplay;
 		private System.Windows.Forms.Button buttonNakedSingle;
 		private System.Windows.Forms.Button buttonHiddenSingle;

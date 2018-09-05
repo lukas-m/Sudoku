@@ -88,8 +88,15 @@ namespace Sudoku
 			try
 			{
 				Reset();
+
 				var lines = File.ReadAllLines(path);
 				_board.Load(lines);
+
+				foreach (var cell in _cells.Values)
+				{
+					cell.SetColor(SudokuPanel.Colors.Basic);
+				}
+
 				panelBoard.Refresh();
 			}
 			finally
@@ -112,26 +119,11 @@ namespace Sudoku
 			}
 		}
 
-		private void buttonGenerate_Click(object sender, EventArgs e)
-		{
-			var rng = new Random();
-			foreach (var cell in _cells.Keys)
-			{
-				if (rng.Next(0, 4) == 0)
-				{
-					var val = rng.Next(1, 10);
-					if (cell.HasCandidate(val))
-						cell.Value = val;
-				}
-			}
-			panelBoard.Refresh();
-		}
-
 		private void Execute(Func<List<Cell>> action)
 		{
 			foreach (var cell in _cells.Values)
 			{
-				cell.SetColor(SudokuPanel.Colors.Basic); 
+				cell.SetColor(SudokuPanel.Colors.Basic);
 			}
 
 			while (true)
@@ -140,16 +132,11 @@ namespace Sudoku
 
 				foreach (var cell in changed)
 				{
-					_cells[cell].SetColor(SudokuPanel.Colors.Changed); 
-				}
-				if (changed.Count > 0)
-				{
-					// refresh all due to possible changes in cells where candidates were removed in reaction to changed cells
-					panelBoard.Refresh();
+					_cells[cell].SetColor(SudokuPanel.Colors.Changed);
 				}
 
 				if (checkBoxAutoplay.Checked && changed.Count > 0)
-					Thread.Sleep(50);
+					Thread.Sleep(200);
 				else
 					break;
 
@@ -158,6 +145,19 @@ namespace Sudoku
 					_cells[cell].SetColor(SudokuPanel.Colors.Basic);
 				}
 			}
+		}
+
+		private void buttonBacktracking_Click(object sender, EventArgs e)
+		{
+			foreach (var cell in _cells.Values)
+			{
+				cell.SetColor(SudokuPanel.Colors.Basic);
+			}
+			bool found = _board.Backtracking();
+			if (found)
+				panelBoard.Refresh();
+			else
+				MessageBox.Show("No solution found.");
 		}
 
 		private void buttonNakedSingle_Click(object sender, EventArgs e)

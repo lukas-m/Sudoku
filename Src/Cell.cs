@@ -18,6 +18,8 @@ namespace Sudoku
 
 		public int Possibilities { get; private set; }
 
+		public bool BacktrackingMode { get; set; }
+
 		public int Value
 		{
 			get
@@ -26,23 +28,30 @@ namespace Sudoku
 			}
 			set
 			{
-				if (value < Cell.MinValue || value > Cell.MaxValue)
-					throw new ArgumentOutOfRangeException("Invalid value.");
-				if (!HasCandidate(value))
-					throw new InvalidOperationException("Cannot assign this value.");
-				_value = value;
-				Candidates = 0;
-				Possibilities = 0;
-				foreach (var seg in Segments.Keys)
+				if (BacktrackingMode)
 				{
-					seg.FreeCells--;
-					seg.Values |= CandidatesHelper.ToCandidate(value);
-					foreach (var cell in seg)
-					{
-						cell.RemoveSingleCandidate(value);
-					}
+					_value = value;
 				}
-				OnChanged();
+				else
+				{
+					if (value < Cell.MinValue || value > Cell.MaxValue)
+						throw new ArgumentOutOfRangeException("Invalid value.");
+					if (!HasCandidate(value))
+						throw new InvalidOperationException("Cannot assign this value.");
+					_value = value;
+					Candidates = 0;
+					Possibilities = 0;
+					foreach (var seg in Segments.Keys)
+					{
+						seg.FreeCells--;
+						seg.Values |= CandidatesHelper.ToCandidate(value);
+						foreach (var cell in seg)
+						{
+							cell.RemoveSingleCandidate(value);
+						}
+					}
+					OnChanged();
+				}
 			}
 		}
 
@@ -132,6 +141,7 @@ namespace Sudoku
 				}
 			}
 			_value = 0;
+			IsFixed = false;
 			Candidates = Cell.AllCandidates;
 			Possibilities = CandidatesHelper.Count(Candidates);
 			OnChanged();

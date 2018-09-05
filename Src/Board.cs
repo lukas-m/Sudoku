@@ -10,11 +10,12 @@ namespace Sudoku
 	public enum BoardAction
 	{
 		None = 0,
-		NakedSingle = 0x1,
-		HiddenSingle = 0x2,
-		NakedPair = 0x4,
-		SinglePair = 0x8,
-		PointingPair = 0x10,
+		Backtracking = 0x01,
+		NakedSingle = 0x02,
+		HiddenSingle = 0x04,
+		NakedPair = 0x08,
+		SinglePair = 0x10,
+		PointingPair = 0x11,
 	}
 
 	public class Board
@@ -91,6 +92,7 @@ namespace Sudoku
 					if (value == ".")
 						continue;
 					_cells[x, y].Value = int.Parse(value);
+					_cells[x, y].IsFixed = true;
 				}
 			}
 		}
@@ -101,7 +103,8 @@ namespace Sudoku
 			switch (action)
 			{
 				case BoardAction.None: return changes;
-				case BoardAction.NakedSingle: Single(changes); break;
+				case BoardAction.Backtracking: Backtracking(changes); break;
+				case BoardAction.NakedSingle: NakedSingle(changes); break;
 				case BoardAction.HiddenSingle: HiddenSingle(changes); break;
 				case BoardAction.NakedPair: NakedPair(changes); break;
 				case BoardAction.SinglePair: SinglePair(changes); break;
@@ -112,17 +115,93 @@ namespace Sudoku
 
 			foreach (var cell in changes)
 			{
-				if (cell.Possibilities == 1)
+				if (cell.Possibilities == 1 && action != BoardAction.Backtracking)
 					cell.Value = Cell.ToValue(cell.Candidates);
 			}
 			return changes;
+		}
+
+		private void Backtracking(List<Cell> changes)
+		{
+			if (Backtracking())
+			{
+				foreach (var cell in _cellsList)
+				{
+					if (!cell.IsFixed)
+						changes.Add(cell);
+				}
+			}
+		}
+
+		public bool Backtracking()
+		{
+			var cells = new List<Cell>();
+			foreach (var cell in _cellsList)
+			{
+				cell.BacktrackingMode = true;
+				cells.Add(cell);
+			}
+			cells = new List<Cell>(cells.OrderBy(c => c.Possibilities));
+
+			try
+			{
+				for (int c = 0; c < cells.Count; c++)
+				{
+					var cell = cells[c];
+					if (!cell.HasValue)
+					{
+						for (int i = Cell.MinValue; i <= Cell.MaxValue; i++)
+						{
+							if (cell.HasCandidate(i) && Backtrack(cells, c, cell, i))
+								return true;
+						}
+						return false;
+					}
+				}
+				return false;
+			}
+			finally
+			{
+				foreach (var cell in _cellsList)
+				{
+					cell.BacktrackingMode = false;
+				}
+			}
+		}
+
+		private bool Backtrack(List<Cell> cells, int idx, Cell testedCell, int value)
+		{
+			foreach (var seg in testedCell.Segments.Keys)
+			{
+				foreach (var tc in seg)
+				{
+					if (tc.Value == value)
+						return false;
+				}
+			}
+
+			testedCell.Value = value;
+
+			int c = idx + 1;
+			if (c == cells.Count)
+				return true;
+
+			var cell = cells[c];
+			for (int i = Cell.MinValue; i <= Cell.MaxValue; i++)
+			{
+				if (cell.HasCandidate(i) && Backtrack(cells, c, cell, i))
+					return true;
+			}
+
+			testedCell.Value = 0;
+			return false;
 		}
 
 		/// <summary>
 		/// If a cell has single candidate,
 		/// then this cell contains that value.
 		/// </summary>
-		private void Single(List<Cell> changes)
+		private void NakedSingle(List<Cell> changes)
 		{
 			foreach (var cell in _cellsList)
 			{
@@ -160,7 +239,7 @@ namespace Sudoku
 						changes.Add(last);
 						last.SetSingleCandidate(i);
 					}
-				Label_HiddenSingleContinue:
+Label_HiddenSingleContinue:
 					continue;
 				}
 			}

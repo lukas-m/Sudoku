@@ -62,7 +62,7 @@ namespace Sudoku
 						if (Cell.IsFixed)
 						{
 							BackColor = Color.Blue;
-							_fore = Brushes.LightBlue;
+							_fore = Brushes.LightGreen;
 						}
 						else
 						{
@@ -75,7 +75,7 @@ namespace Sudoku
 						if (Cell.IsFixed)
 						{
 							BackColor = Color.White;
-							_fore = Brushes.Navy;
+							_fore = Brushes.DarkGreen;
 						}
 						else
 						{
