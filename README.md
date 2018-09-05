@@ -2,15 +2,16 @@
 
 Contains:
 
-- Four human solving algorihtms (**other coming soon**).
-- Backtracking solving algorithm **coming soon**.
+- Simple WinForm GUI.
+- Computer solving 'Backtracking' algorithm.
+- Human solving algorithms.
 
 All algorithms are implemented for general sudoku (not only 9x9).
 
 **Human solving algorihtms**
 
-- Singles / Naked singles
-- Hidden singles / Eyeballing
+- Naked singles
+- Hidden singles (Eyeballing)
 - Naked pairs
 - Hidden pairs
 
