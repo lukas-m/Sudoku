@@ -2,8 +2,9 @@
 
 Contains:
 
+- Simple WinForm GUI.
 - Computer solving 'Backtracking' algorithm.
-- Human solving algorihtms.
+- Human solving algorithms.
 
 All algorithms are implemented for general sudoku (not only 9x9).
 
