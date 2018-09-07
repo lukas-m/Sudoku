@@ -5,9 +5,10 @@ namespace Sudoku
 {
 	public class Cell
 	{
+		public const int EmptyValue = 0;
 		public const int MinValue = 1;
 		public const int MaxValue = 9;
-		public const Candidates AllCandidates = (Candidates)0x01FF;
+		public static readonly Candidates AllCandidates = (Candidates)((1 << (1 + MaxValue - MinValue)) - 1);
 
 		public EventHandler Changed;
 
@@ -140,7 +141,7 @@ namespace Sudoku
 					seg.Values &= ~CandidatesHelper.ToCandidate(Value);
 				}
 			}
-			_value = 0;
+			_value = Cell.EmptyValue;
 			IsFixed = false;
 			Candidates = Cell.AllCandidates;
 			Possibilities = CandidatesHelper.Count(Candidates);

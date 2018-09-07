@@ -193,7 +193,7 @@ namespace Sudoku
 					return true;
 			}
 
-			testedCell.Value = 0;
+			testedCell.Value = Cell.EmptyValue;
 			return false;
 		}
 
