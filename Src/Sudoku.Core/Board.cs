@@ -78,9 +78,12 @@ namespace Sudoku
 
 			int x = -1;
 			int y = -1;
-			foreach (var line in lines)
+			foreach (var rawline in lines)
 			{
-				if (line.Contains('-') || line.Length < 9)
+				int idx = rawline.IndexOf('#'); // remove comments
+				string line = idx < 0 ? rawline.Trim() : rawline.Substring(0, idx).Trim();
+
+				if (line.StartsWith("-") || line.Length == 0)
 					continue;
 
 				x = -1;
