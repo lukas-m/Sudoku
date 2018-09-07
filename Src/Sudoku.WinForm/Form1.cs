@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Sudoku
@@ -64,7 +59,22 @@ namespace Sudoku
 			p.Refresh();
 		}
 
+		private void buttonBrowse_Click(object sender, EventArgs e)
+		{
+			openFileDialog1.InitialDirectory = Path.GetDirectoryName(Path.GetFullPath(textBoxSource.Text));
+			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+			{
+				textBoxSource.Text = openFileDialog1.FileName;
+				LoadBoard();
+			}
+		}
+
 		private void buttonLoad_Click(object sender, EventArgs e)
+		{
+			LoadBoard();
+		}
+
+		private void LoadBoard()
 		{
 			string path = textBoxSource.Text;
 			if (!File.Exists(path))
