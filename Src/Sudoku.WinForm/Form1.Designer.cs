@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.panelBoard = new System.Windows.Forms.Panel();
 			this.buttonReset = new System.Windows.Forms.Button();
 			this.buttonBacktracking = new System.Windows.Forms.Button();
@@ -191,6 +192,7 @@
 			this.Controls.Add(this.buttonBacktracking);
 			this.Controls.Add(this.buttonReset);
 			this.Controls.Add(this.panelBoard);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Form1";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Sudoku";
