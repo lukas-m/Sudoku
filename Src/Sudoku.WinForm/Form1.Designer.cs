@@ -39,6 +39,8 @@
 			this.buttonLoad = new System.Windows.Forms.Button();
 			this.buttonSinglePair = new System.Windows.Forms.Button();
 			this.buttonPointingPair = new System.Windows.Forms.Button();
+			this.buttonBrowse = new System.Windows.Forms.Button();
+			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.SuspendLayout();
 			// 
 			// panelBoard
@@ -121,13 +123,13 @@
 			// 
 			this.textBoxSource.Location = new System.Drawing.Point(13, 745);
 			this.textBoxSource.Name = "textBoxSource";
-			this.textBoxSource.Size = new System.Drawing.Size(644, 20);
+			this.textBoxSource.Size = new System.Drawing.Size(690, 20);
 			this.textBoxSource.TabIndex = 7;
-			this.textBoxSource.Text = "../../../source.txt";
+			this.textBoxSource.Text = "..\\..\\..\\..\\Data\\source.txt";
 			// 
 			// buttonLoad
 			// 
-			this.buttonLoad.Location = new System.Drawing.Point(663, 745);
+			this.buttonLoad.Location = new System.Drawing.Point(745, 745);
 			this.buttonLoad.Name = "buttonLoad";
 			this.buttonLoad.Size = new System.Drawing.Size(75, 23);
 			this.buttonLoad.TabIndex = 8;
@@ -157,11 +159,27 @@
 			this.buttonPointingPair.UseVisualStyleBackColor = true;
 			this.buttonPointingPair.Click += new System.EventHandler(this.buttonPointingPair_Click);
 			// 
+			// buttonBrowse
+			// 
+			this.buttonBrowse.Location = new System.Drawing.Point(709, 744);
+			this.buttonBrowse.Name = "buttonBrowse";
+			this.buttonBrowse.Size = new System.Drawing.Size(30, 23);
+			this.buttonBrowse.TabIndex = 11;
+			this.buttonBrowse.Text = "...";
+			this.buttonBrowse.UseVisualStyleBackColor = true;
+			this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
+			// 
+			// openFileDialog1
+			// 
+			this.openFileDialog1.DefaultExt = "*.txt";
+			this.openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(888, 784);
+			this.Controls.Add(this.buttonBrowse);
 			this.Controls.Add(this.buttonPointingPair);
 			this.Controls.Add(this.buttonSinglePair);
 			this.Controls.Add(this.buttonLoad);
@@ -195,6 +213,8 @@
 		private System.Windows.Forms.Button buttonLoad;
 		private System.Windows.Forms.Button buttonSinglePair;
 		private System.Windows.Forms.Button buttonPointingPair;
+		private System.Windows.Forms.Button buttonBrowse;
+		private System.Windows.Forms.OpenFileDialog openFileDialog1;
 	}
 }
 
