@@ -145,9 +145,9 @@
 			this.buttonSinglePair.Name = "buttonSinglePair";
 			this.buttonSinglePair.Size = new System.Drawing.Size(131, 53);
 			this.buttonSinglePair.TabIndex = 9;
-			this.buttonSinglePair.Text = "Single Pair";
+			this.buttonSinglePair.Text = "Hidden Pair";
 			this.buttonSinglePair.UseVisualStyleBackColor = true;
-			this.buttonSinglePair.Click += new System.EventHandler(this.buttonSinglePair_Click);
+			this.buttonSinglePair.Click += new System.EventHandler(this.buttonHiddenPair_Click);
 			// 
 			// buttonPointingPair
 			// 

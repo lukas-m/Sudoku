@@ -14,7 +14,7 @@ namespace Sudoku
 		NakedSingle = 0x02,
 		HiddenSingle = 0x04,
 		NakedPair = 0x08,
-		SinglePair = 0x10,
+		HiddenPair = 0x10,
 		PointingPair = 0x11,
 	}
 
@@ -110,7 +110,7 @@ namespace Sudoku
 				case BoardAction.NakedSingle: NakedSingle(changes); break;
 				case BoardAction.HiddenSingle: HiddenSingle(changes); break;
 				case BoardAction.NakedPair: NakedPair(changes); break;
-				case BoardAction.SinglePair: SinglePair(changes); break;
+				case BoardAction.HiddenPair: HiddenPair(changes); break;
 				case BoardAction.PointingPair: PointingPair(changes); break;
 				default:
 					throw new ArgumentOutOfRangeException("action");
@@ -297,7 +297,7 @@ Label_HiddenSingleContinue:
 		/// If two candidates in one segment are contained in the same two cells only,
 		/// then other candidates in those cells can be removed.
 		/// </summary>
-		private void SinglePair(List<Cell> changes)
+		private void HiddenPair(List<Cell> changes)
 		{
 			using (var cacheItem = _cache.Get<int, SinglePairInfo>())
 			{

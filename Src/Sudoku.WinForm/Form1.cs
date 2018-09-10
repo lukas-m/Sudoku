@@ -173,9 +173,9 @@ namespace Sudoku
 			Execute(() => _board.Perform(BoardAction.NakedPair));
 		}
 
-		private void buttonSinglePair_Click(object sender, EventArgs e)
+		private void buttonHiddenPair_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.SinglePair));
+			Execute(() => _board.Perform(BoardAction.HiddenPair));
 		}
 
 		private void buttonPointingPair_Click(object sender, EventArgs e)
