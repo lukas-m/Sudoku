@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Sudoku.Strategies;
 
 namespace Sudoku
 {
@@ -12,6 +13,7 @@ namespace Sudoku
 		Board _board;
 		Dictionary<Cell, SudokuPanel> _cells;
 		bool _refreshDisabled;
+		int _executing;
 
 		public Form1()
 		{
@@ -59,22 +61,73 @@ namespace Sudoku
 			p.Refresh();
 		}
 
-		private void buttonBrowse_Click(object sender, EventArgs e)
+		private async Task Execute(Func<Task> action)
 		{
-			openFileDialog1.InitialDirectory = Path.GetDirectoryName(Path.GetFullPath(textBoxSource.Text));
-			if (openFileDialog1.ShowDialog() == DialogResult.OK)
+			if (System.Threading.Interlocked.CompareExchange(ref _executing, 1, 0) == 1)
+				return;
+
+			try
 			{
-				textBoxSource.Text = openFileDialog1.FileName;
-				LoadBoard();
+				await action();
+			}
+			finally
+			{
+				System.Threading.Interlocked.CompareExchange(ref _executing, 0, 1);
 			}
 		}
 
-		private void buttonLoad_Click(object sender, EventArgs e)
+		private Task Execute(Func<List<Cell>> action)
 		{
-			LoadBoard();
+			return Execute(async () =>
+			{
+				foreach (var cell in _cells.Values)
+				{
+					cell.SetColor(SudokuPanel.Colors.Basic);
+				}
+
+				while (true)
+				{
+					var changed = action();
+					if (changed == null)
+						return;
+
+					foreach (var cell in changed)
+					{
+						_cells[cell].SetColor(SudokuPanel.Colors.Changed);
+					}
+
+					if (checkBoxAutoplay.Checked && changed.Count > 0)
+						await Task.Delay(500);
+					else
+						return;
+
+					foreach (var cell in changed)
+					{
+						_cells[cell].SetColor(SudokuPanel.Colors.Basic);
+					}
+				}
+			});
 		}
 
-		private void LoadBoard()
+		private async void buttonBrowse_Click(object sender, EventArgs e)
+		{
+			await Execute(async () =>
+			{
+				openFileDialog1.InitialDirectory = Path.GetDirectoryName(Path.GetFullPath(textBoxSource.Text));
+				if (openFileDialog1.ShowDialog() == DialogResult.OK)
+				{
+					textBoxSource.Text = openFileDialog1.FileName;
+					await LoadBoard();
+				}
+			});
+		}
+
+		private async void buttonLoad_Click(object sender, EventArgs e)
+		{
+			await Execute((Func<Task>)LoadBoard);
+		}
+
+		private async Task LoadBoard()
 		{
 			string path = textBoxSource.Text;
 			if (!File.Exists(path))
@@ -83,7 +136,7 @@ namespace Sudoku
 			_refreshDisabled = true;
 			try
 			{
-				Reset();
+				await Reset();
 
 				var lines = File.ReadAllLines(path);
 				_board.Load(lines);
@@ -101,86 +154,57 @@ namespace Sudoku
 			}
 		}
 
-		private void buttonReset_Click(object sender, EventArgs e)
+		private async void buttonReset_Click(object sender, EventArgs e)
 		{
-			Reset();
+			await Execute((Func<Task>)Reset);
 		}
 
-		private void Reset()
+		private Task Reset()
 		{
 			foreach (var pair in _cells)
 			{
 				pair.Key.Reset();
 				pair.Value.SetColor(SudokuPanel.Colors.Basic);
 			}
+			return Task.CompletedTask;
 		}
 
-		private void Execute(Func<List<Cell>> action)
+		private async void buttonBacktracking_Click(object sender, EventArgs e)
 		{
-			foreach (var cell in _cells.Values)
+			await Execute(() =>
 			{
-				cell.SetColor(SudokuPanel.Colors.Basic);
-			}
-
-			while (true)
-			{
-				var changed = action();
-				if (changed == null)
-					return;
-
-				foreach (var cell in changed)
-				{
-					_cells[cell].SetColor(SudokuPanel.Colors.Changed);
-				}
-
-				if (checkBoxAutoplay.Checked && changed.Count > 0)
-					Thread.Sleep(500);
-				else
-					return;
-
-				foreach (var cell in changed)
-				{
-					_cells[cell].SetColor(SudokuPanel.Colors.Basic);
-				}
-			}
-		}
-
-		private void buttonBacktracking_Click(object sender, EventArgs e)
-		{
-			Execute(() =>
-			{
-				bool found = _board.Backtracking();
+				bool found = BacktrackingStrategy.Backtrack(_board);
 				if (found)
 					panelBoard.Refresh();
 				else
 					MessageBox.Show("No solution found.");
-				return null;
+				return Task.CompletedTask;
 			});
 		}
 
-		private void buttonNakedSingle_Click(object sender, EventArgs e)
+		private async void buttonNakedSingle_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.NakedSingle));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.NakedSingle, _board));
 		}
 
-		private void buttonHiddenSingle_Click(object sender, EventArgs e)
+		private async void buttonHiddenSingle_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.HiddenSingle));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.HiddenSingle, _board));
 		}
 
-		private void buttonNakedPair_Click(object sender, EventArgs e)
+		private async void buttonNakedPair_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.NakedPair));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.NakedPair, _board));
 		}
 
-		private void buttonHiddenPair_Click(object sender, EventArgs e)
+		private async void buttonHiddenPair_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.HiddenPair));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.HiddenPair, _board));
 		}
 
-		private void buttonPointingPair_Click(object sender, EventArgs e)
+		private async void buttonPointingPair_Click(object sender, EventArgs e)
 		{
-			Execute(() => _board.Perform(BoardAction.PointingPair));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.PointingPair, _board));
 		}
 	}
 }

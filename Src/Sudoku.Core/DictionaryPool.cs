@@ -5,9 +5,11 @@ namespace Sudoku
 {
 	public class DictionaryPool
 	{
-		Dictionary<string, Queue<IDisposable>> _pool = new Dictionary<string, Queue<IDisposable>>();
+		public static readonly DictionaryPool Shared = new DictionaryPool();
 
-		public DisposableDictionary<TKey, TValue> Get<TKey, TValue>()
+		private readonly Dictionary<string, Queue<IDisposable>> _pool = new Dictionary<string, Queue<IDisposable>>();
+
+		public DisposableDictionary<TKey, TValue> Rent<TKey, TValue>()
 		{
 			var queue = GetQueue<TKey, TValue>();
 			if (queue.Count == 0)
@@ -16,7 +18,7 @@ namespace Sudoku
 				return queue.Dequeue() as DisposableDictionary<TKey, TValue>;
 		}
 
-		private void Add<TKey, TValue>(DisposableDictionary<TKey, TValue> value)
+		private void Return<TKey, TValue>(DisposableDictionary<TKey, TValue> value)
 		{
 			var queue = GetQueue<TKey, TValue>();
 			queue.Enqueue(value);
@@ -46,7 +48,7 @@ namespace Sudoku
 
 			void IDisposable.Dispose()
 			{
-				_owner.Add(this);
+				_owner.Return(this);
 			}
 		}
 	}

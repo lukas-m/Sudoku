@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Sudoku</RootNamespace>
     <AssemblyName>Sudoku.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +49,14 @@
     <Compile Include="DictionaryPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Segment.cs" />
+    <Compile Include="Strategies\BacktrackingStrategy.cs" />
+    <Compile Include="Strategies\HiddenPairStrategy.cs" />
+    <Compile Include="Strategies\HiddenSingleStrategy.cs" />
+    <Compile Include="Strategies\SolvingStrategy.cs" />
+    <Compile Include="Strategies\NakedPairStrategy.cs" />
+    <Compile Include="Strategies\NakedSingleStrategy.cs" />
+    <Compile Include="Strategies\PointingPairStrategy.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
