@@ -1,15 +1,14 @@
 # Sudoku
 
-Contains:
+## Contains:
 
 - Simple WinForm GUI.
-- Computer solving 'Backtracking' algorithm.
 - Human solving algorithms.
-- Sudoku generator **coming soon**.
+- Computer solving 'Backtracking' algorithm.
 
-All algorithms are implemented for general sudoku (not only 9x9).
+All algorithms are implemented for general Sudoku (not only 9x9), but GUI and board loader support only 9x9 currently.
 
-**Human solving algorihtms**
+## Human solving algorithms:
 
 - Naked singles
 - Hidden singles (Eyeballing)
