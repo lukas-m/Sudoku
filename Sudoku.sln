@@ -7,6 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.WinForm", "Src\Sudok
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sudoku.Core", "Src\Sudoku.Core\Sudoku.Core.csproj", "{A950B5B0-2232-42AE-A865-F246F62943A4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{105BA9B7-AC78-4CE0-99B8-0B5450A57A3C}"
+	ProjectSection(SolutionItems) = preProject
+		Data\source.txt = Data\source.txt
+		Data\source_Brute_force.txt = Data\source_Brute_force.txt
+		Data\source_Brute_force_2.txt = Data\source_Brute_force_2.txt
+		Data\source_TEMPLATE.txt = Data\source_TEMPLATE.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

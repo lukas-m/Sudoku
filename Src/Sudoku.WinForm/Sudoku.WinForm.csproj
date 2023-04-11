@@ -79,7 +79,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sudoku.Core\Sudoku.Core.csproj">
       <Project>{a950b5b0-2232-42ae-a865-f246f62943a4}</Project>
-      <Name>Sudoku.Lib</Name>
+      <Name>Sudoku.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
