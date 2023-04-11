@@ -45,7 +45,7 @@
     <Compile Include="Board.cs" />
     <Compile Include="Candidates.cs" />
     <Compile Include="Cell.cs" />
-    <Compile Include="DictionaryCache.cs" />
+    <Compile Include="DictionaryPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Segment.cs" />
   </ItemGroup>

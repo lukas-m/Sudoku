@@ -23,7 +23,7 @@ namespace Sudoku
 		private Cell[,] _cells;
 		private List<Cell> _cellsList;
 
-		private DictionaryCache _cache = new DictionaryCache();
+		private DictionaryPool _cache = new DictionaryPool();
 
 		public List<Segment> Segments { get; private set; }
 
@@ -254,9 +254,8 @@ Label_HiddenSingleContinue:
 		/// </summary>
 		private void NakedPair(List<Cell> changes)
 		{
-			using (var cacheItem = _cache.Get<Candidates, int>())
+			using (var dic = _cache.Get<Candidates, int>())
 			{
-				var dic = cacheItem.Dictionary;
 				foreach (var seg in Segments)
 				{
 					if (seg.FreeCells < 3)
@@ -299,9 +298,9 @@ Label_HiddenSingleContinue:
 		/// </summary>
 		private void HiddenPair(List<Cell> changes)
 		{
-			using (var cacheItem = _cache.Get<int, SinglePairInfo>())
+			using (var dic = _cache.Get<int, SinglePairInfo>())
 			{
-				var dic = cacheItem.Dictionary; // cells -> count, Candidates
+				// cells -> count, Candidates
 				foreach (var seg in Segments)
 				{
 					if (seg.FreeCells < 3)
