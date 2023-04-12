@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using Sudoku.Strategies;
 
 namespace Sudoku
@@ -14,7 +15,7 @@ namespace Sudoku
 		Board _board;
 		Dictionary<Cell, SudokuPanel> _cells;
 		bool _refreshDisabled;
-		int _executing;
+		AtomicBool _executing;
 
 		public Form1()
 		{
@@ -61,7 +62,7 @@ namespace Sudoku
 
 		private async Task Execute(Func<Task> action)
 		{
-			if (System.Threading.Interlocked.CompareExchange(ref _executing, 1, 0) == 1)
+			if (!_executing.SetTrue())
 				return;
 
 			try
@@ -70,7 +71,7 @@ namespace Sudoku
 			}
 			finally
 			{
-				System.Threading.Interlocked.CompareExchange(ref _executing, 0, 1);
+				_executing.SetFalse();
 			}
 		}
 
