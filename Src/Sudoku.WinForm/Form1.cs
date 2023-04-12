@@ -14,7 +14,7 @@ namespace Sudoku
 	{
 		Board _board;
 		Dictionary<Cell, SudokuPanel> _cells;
-		bool _refreshDisabled;
+		AtomicBool _refreshDisabled;
 		AtomicBool _executing;
 
 		public Form1()
@@ -45,7 +45,7 @@ namespace Sudoku
 					p.Size = new Size(80, 80);
 					p.Location = new Point(dx + c * 80, dy + r * 80);
 					p.Font = new Font(FontFamily.GenericSansSerif, 40);
-					p.Changed += PanelChanged;
+					p.Changed += (s, _) => { if (!_refreshDisabled.Value) ((SudokuPanel)s).Refresh(); };
 
 					panelBoard.Controls.Add(p);
 					_cells.Add(p.Cell, p);
@@ -53,71 +53,15 @@ namespace Sudoku
 			}
 		}
 
-		private void PanelChanged(object sender, EventArgs e)
-		{
-			if (_refreshDisabled)
-				return;
-			var p = (SudokuPanel)sender;
-			p.Refresh();
-		}
-
-		private async Task Execute(Func<Task> action)
-		{
-			if (!_executing.SetTrue())
-				return;
-
-			try
-			{
-				await action();
-			}
-			finally
-			{
-				_executing.SetFalse();
-			}
-		}
-
-		private Task Execute(Func<List<Cell>> action)
-		{
-			return Execute(async () =>
-			{
-				foreach (var cell in _cells.Values)
-				{
-					cell.SetColor(SudokuPanel.Colors.Basic);
-				}
-
-				while (true)
-				{
-					var changed = action();
-					if (changed == null)
-						return;
-
-					foreach (var cell in changed)
-					{
-						_cells[cell].SetColor(SudokuPanel.Colors.Changed);
-					}
-
-					if (checkBoxAutoplay.Checked && changed.Count > 0)
-						await Task.Delay(500);
-					else
-						return;
-
-					foreach (var cell in changed)
-					{
-						_cells[cell].SetColor(SudokuPanel.Colors.Basic);
-					}
-				}
-			});
-		}
-
 		private async void buttonBrowse_Click(object sender, EventArgs e)
 		{
-			await Execute(async () =>
+			await Execute(() =>
 			{
 				openFileDialog1.InitialDirectory = Path.GetDirectoryName(Path.GetFullPath(textBoxSource.Text));
 				if (openFileDialog1.ShowDialog() == DialogResult.OK)
 				{
 					textBoxSource.Text = openFileDialog1.FileName;
-					await LoadBoard();
+					LoadBoard();
 				}
 			});
 		}
@@ -127,16 +71,16 @@ namespace Sudoku
 			await Execute(LoadBoard);
 		}
 
-		private async Task LoadBoard()
+		private void LoadBoard()
 		{
 			string path = textBoxSource.Text;
 			if (!File.Exists(path))
 				return;
 
-			_refreshDisabled = true;
+			_refreshDisabled.SetTrue();
 			try
 			{
-				await Reset();
+				Reset();
 
 				var lines = File.ReadAllLines(path);
 				_board.Load(lines);
@@ -150,7 +94,7 @@ namespace Sudoku
 			}
 			finally
 			{
-				_refreshDisabled = false;
+				_refreshDisabled.SetFalse();
 			}
 		}
 
@@ -159,14 +103,13 @@ namespace Sudoku
 			await Execute(Reset);
 		}
 
-		private Task Reset()
+		private void Reset()
 		{
 			foreach (var pair in _cells)
 			{
 				pair.Key.Reset();
 				pair.Value.SetColor(SudokuPanel.Colors.Basic);
 			}
-			return Task.CompletedTask;
 		}
 
 		private async void buttonBacktracking_Click(object sender, EventArgs e)
@@ -206,5 +149,62 @@ namespace Sudoku
 		{
 			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.PointingPair, _board));
 		}
+
+		#region Execute methods
+
+		private Task Execute(Func<List<Cell>> getChangedCells)
+		{
+			return Execute(async () =>
+			{
+				foreach (var cell in _cells.Values)
+				{
+					cell.SetColor(SudokuPanel.Colors.Basic);
+				}
+
+				while (true)
+				{
+					var changed = getChangedCells();
+					if (changed == null)
+						return;
+
+					foreach (var cell in changed)
+					{
+						_cells[cell].SetColor(SudokuPanel.Colors.Changed);
+					}
+
+					if (checkBoxAutoplay.Checked && changed.Count > 0)
+						await Task.Delay(500);
+					else
+						return;
+
+					foreach (var cell in changed)
+					{
+						_cells[cell].SetColor(SudokuPanel.Colors.Basic);
+					}
+				}
+			});
+		}
+
+		private Task Execute(Action action)
+		{
+			return Execute(() => { action(); return Task.CompletedTask; });
+		}
+
+		private async Task Execute(Func<Task> action)
+		{
+			if (!_executing.SetTrue())
+				return;
+
+			try
+			{
+				await action();
+			}
+			finally
+			{
+				_executing.SetFalse();
+			}
+		}
+
+		#endregion
 	}
 }
