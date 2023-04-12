@@ -28,7 +28,7 @@ namespace Sudoku
 			{
 				for (int c = 0; c < columns; c++)
 				{
-					var cell = new Cell();
+					var cell = new Cell(r, c);
 					Matrix[r, c] = cell;
 					Cells.Add(cell);
 				}

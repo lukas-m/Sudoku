@@ -15,6 +15,9 @@ namespace Sudoku
 		private int _value;
 		private Candidates _candidates;
 
+		public int Row { get; }
+		public int Column { get; }
+
 		public bool IsFixed { get; set; }
 
 		public int Possibilities { get; private set; }
@@ -66,8 +69,10 @@ namespace Sudoku
 
 		public Dictionary<Segment, Segment> Segments { get; private set; }
 
-		public Cell()
+		public Cell(int row, int column)
 		{
+			Row = row;
+			Column = column;
 			Segments = new Dictionary<Segment, Segment>();
 			Reset();
 		}
@@ -180,7 +185,7 @@ namespace Sudoku
 
 		public override string ToString()
 		{
-			return string.Format("{0} ({1})", Value, Candidates);
+			return string.Format("[{0};{1}] {2} ({3})", Row, Column, Value, Candidates);
 		}
 	}
 }
