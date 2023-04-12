@@ -40,8 +40,8 @@ namespace Sudoku
 				Segment column = new Segment();
 				for (int j = 0; j < columns; j++)
 				{
-					row.Register(Matrix[i, j]);
-					column.Register(Matrix[j, i]);
+					row.Add(Matrix[i, j]);
+					column.Add(Matrix[j, i]);
 				}
 				Segments.Add(column);
 				Segments.Add(row);
@@ -54,7 +54,7 @@ namespace Sudoku
 					Segment square = new Segment();
 					for (int k = 0; k < 9; k++)
 					{
-						square.Register(Matrix[r + (k % 3), c + (k / 3)]);
+						square.Add(Matrix[r + (k % 3), c + (k / 3)]);
 					}
 					Segments.Add(square);
 				}

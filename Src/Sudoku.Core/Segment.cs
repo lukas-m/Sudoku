@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sudoku
 {
-	public class Segment : List<Cell>
+	public class Segment : IEnumerable<Cell>
 	{
-		Dictionary<Cell, Cell> _cells = new Dictionary<Cell, Cell>();
+		private readonly List<Cell> _list = new List<Cell>(9);
+		private readonly Dictionary<Cell, Cell> _cells = new Dictionary<Cell, Cell>(9);
 
+		public int Count => _list.Count;
 		public int FreeCells { get; set; }
 		public Candidates Values { get; set; }
 
@@ -18,36 +18,22 @@ namespace Sudoku
 			return ((Values & CandidatesHelper.ToCandidate(value)) != 0);
 		}
 
-		private new void Add(Cell cell)
+		public void Add(Cell cell)
 		{
-			base.Add(cell);
+			if (cell.Segments.ContainsKey(this))
+				throw new ArgumentException("Segment already contains given cell.");
+
+			cell.Segments.Add(this, this);
+
+			_list.Add(cell);
+			_cells.Add(cell, cell);
 			if (!cell.HasValue)
 				FreeCells++;
 			else
 				Values |= CandidatesHelper.ToCandidate(cell.Value);
 		}
 
-		public void Register(Cell cell)
-		{
-			if (cell.Segments.ContainsKey(this))
-				throw new ArgumentException("Segment already contains given cell.");
-			Add(cell);
-			_cells.Add(cell, cell);
-			cell.Segments.Add(this, this);
-		}
-
-		public Segment Intersect(Segment other)
-		{
-			Segment intersection = new Segment();
-			foreach (var cell in other)
-			{
-				if (cell.Segments.ContainsKey(this))
-					intersection.Add(cell);
-			}
-			return intersection;
-		}
-
-		public new bool Contains(Cell cell)
+		public bool Contains(Cell cell)
 		{
 			return _cells.ContainsKey(cell);
 		}
@@ -62,6 +48,21 @@ namespace Sudoku
 					return false;
 			}
 			return true;
+		}
+
+		IEnumerator<Cell> IEnumerable<Cell>.GetEnumerator()
+		{
+			return _list.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return _list.GetEnumerator();
+		}
+
+		public override string ToString()
+		{
+			return string.Join(", ", _list);
 		}
 	}
 }
