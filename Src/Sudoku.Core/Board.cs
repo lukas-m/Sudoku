@@ -9,17 +9,16 @@ namespace Sudoku
 {
 	public class Board
 	{
-		private Cell[,] _matrix;
+		public Cell[,] Matrix { get; }
+		public List<Cell> Cells { get; }
+		public List<Segment> Segments { get; }
 
-		public List<Cell> Cells { get; private set; }
-		public List<Segment> Segments { get; private set; }
-
-		public Board(Cell[,] cells)
+		public Board(int width, int height)
 		{
-			if (cells.GetLength(0) != 9 || cells.GetLength(1) != 9)
-				throw new ArgumentException("Invalid board definition.");
+			if (width != 9 || height != 9)
+				throw new ArgumentException("Only 9x9 is supported currently.");
 
-			_matrix = cells;
+			Matrix = new Cell[width, height];
 			Cells = new List<Cell>();
 			Segments = new List<Segment>();
 
@@ -27,20 +26,25 @@ namespace Sudoku
 			{
 				for (int j = 0; j < 9; j++)
 				{
-					Cells.Add(cells[i, j]);
+					var cell = new Cell();
+					Matrix[i, j] = cell;
+					Cells.Add(cell);
 				}
+			}
 
+			for (int i = 0; i < 9; i++)
+			{
 				Segment column = new Segment();
 				for (int j = 0; j < 9; j++)
 				{
-					column.Register(cells[i, j]);
+					column.Register(Matrix[i, j]);
 				}
 				Segments.Add(column);
 
 				Segment row = new Segment();
 				for (int j = 0; j < 9; j++)
 				{
-					row.Register(cells[j, i]);
+					row.Register(Matrix[j, i]);
 				}
 				Segments.Add(row);
 			}
@@ -52,7 +56,7 @@ namespace Sudoku
 					Segment square = new Segment();
 					for (int k = 0; k < 9; k++)
 					{
-						square.Register(cells[i + (k % 3), j + (k / 3)]);
+						square.Register(Matrix[i + (k % 3), j + (k / 3)]);
 					}
 					Segments.Add(square);
 				}
@@ -81,8 +85,8 @@ namespace Sudoku
 					x++;
 					if (value == ".")
 						continue;
-					_matrix[x, y].Value = int.Parse(value);
-					_matrix[x, y].IsFixed = true;
+					Matrix[x, y].Value = int.Parse(value);
+					Matrix[x, y].IsFixed = true;
 				}
 			}
 		}

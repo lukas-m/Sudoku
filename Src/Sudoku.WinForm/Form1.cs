@@ -22,7 +22,7 @@ namespace Sudoku
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			Cell[,] cells = new Cell[9, 9];
+			_board = new Board(9, 9);
 			_cells = new Dictionary<Cell, SudokuPanel>();
 
 			int dx = 0;
@@ -36,7 +36,7 @@ namespace Sudoku
 					if (j > 0 && j % 3 == 0)
 						dy += 2;
 
-					var p = new SudokuPanel(new Cell());
+					var p = new SudokuPanel(_board.Matrix[i, j]);
 					p.BorderStyle = BorderStyle.FixedSingle;
 					p.BackColor = Color.White;
 					p.Size = new Size(80, 80);
@@ -45,12 +45,9 @@ namespace Sudoku
 					p.Changed += PanelChanged;
 
 					panelBoard.Controls.Add(p);
-					cells[i, j] = p.Cell;
 					_cells.Add(p.Cell, p);
 				}
 			}
-
-			_board = new Board(cells);
 		}
 
 		private void PanelChanged(object sender, EventArgs e)
@@ -124,7 +121,7 @@ namespace Sudoku
 
 		private async void buttonLoad_Click(object sender, EventArgs e)
 		{
-			await Execute((Func<Task>)LoadBoard);
+			await Execute(LoadBoard);
 		}
 
 		private async Task LoadBoard()
@@ -156,7 +153,7 @@ namespace Sudoku
 
 		private async void buttonReset_Click(object sender, EventArgs e)
 		{
-			await Execute((Func<Task>)Reset);
+			await Execute(Reset);
 		}
 
 		private Task Reset()
