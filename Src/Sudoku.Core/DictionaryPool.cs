@@ -14,21 +14,27 @@ namespace Sudoku
 			var queue = GetQueue<TKey, TValue>();
 			if (queue.Count == 0)
 				return new DisposableDictionary<TKey, TValue>(this);
-			else
-				return queue.Dequeue() as DisposableDictionary<TKey, TValue>;
+
+			var dic = queue.Dequeue() as DisposableDictionary<TKey, TValue>;
+			dic.IsPooled = false;
+			return dic;
 		}
 
 		private void Return<TKey, TValue>(DisposableDictionary<TKey, TValue> value)
 		{
+			if (value.IsPooled)
+				throw new InvalidOperationException("Attempt to return value into pool multiple times.");
+
 			var queue = GetQueue<TKey, TValue>();
 			queue.Enqueue(value);
 			value.Clear();
+			value.IsPooled = true;
 		}
 
 		private Queue<IDisposable> GetQueue<TKey, TValue>()
 		{
 			Queue<IDisposable> queue;
-			string key = string.Format("{0}@@{1}", typeof(TKey).FullName, typeof(TValue).FullName);
+			string key = string.Format("{0}@{1}", typeof(TKey).FullName, typeof(TValue).FullName);
 			if (!_pool.TryGetValue(key, out queue))
 			{
 				queue = new Queue<IDisposable>();
@@ -39,16 +45,20 @@ namespace Sudoku
 
 		public class DisposableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IDisposable
 		{
-			DictionaryPool _owner;
+			private readonly DictionaryPool _pool;
 
-			public DisposableDictionary(DictionaryPool owner) : base()
+			internal bool IsPooled = false; // object is not pooled after creation
+
+			public DisposableDictionary(DictionaryPool pool) : base()
 			{
-				_owner = owner;
+				_pool = pool;
 			}
 
 			void IDisposable.Dispose()
 			{
-				_owner.Return(this);
+				if (IsPooled)
+					return;
+				_pool.Return(this);
 			}
 		}
 	}
