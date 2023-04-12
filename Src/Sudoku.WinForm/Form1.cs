@@ -8,6 +8,7 @@ using Sudoku.Strategies;
 
 namespace Sudoku
 {
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("ConfigureAwait", "ConfigureAwaitEnforcer:ConfigureAwaitEnforcer", Justification = "<Pending>")]
 	public partial class Form1 : Form
 	{
 		Board _board;
