@@ -14,12 +14,12 @@ namespace Sudoku.Strategies
 		/// If two cells in one segment contains the same two candidates only,
 		/// then these candidates in other cells can be removed.
 		/// </summary>
-		public List<Cell> Perform(Board board)
+		public List<Cell> Perform(Grid grid)
 		{
 			List<Cell> changes = new List<Cell>();
 			using (var dic = DictionaryPool.Shared.Rent<Candidates, int>())
 			{
-				foreach (var seg in board.Segments)
+				foreach (var seg in grid.Segments)
 				{
 					if (seg.FreeCells < 3)
 						continue;

@@ -20,23 +20,23 @@ namespace Sudoku.Strategies
 
 	public interface ISolvingStrategy
 	{
-		List<Cell> Perform(Board board);
+		List<Cell> Perform(Grid grid);
 	}
 
 	public static class SolvingStrategy
 	{
-		public static List<Cell> Perform(SolvingStrategyType strategy, Board board)
+		public static List<Cell> Perform(SolvingStrategyType strategy, Grid grid)
 		{
 			List<Cell> changes;
 			switch (strategy)
 			{
 				case SolvingStrategyType.None: return new List<Cell>();
-				case SolvingStrategyType.Backtracking: changes = BacktrackingStrategy.Instance.Perform(board); break;
-				case SolvingStrategyType.NakedSingle: changes = NakedSingleStrategy.Instance.Perform(board); break;
-				case SolvingStrategyType.HiddenSingle: changes = HiddenSingleStrategy.Instance.Perform(board); break;
-				case SolvingStrategyType.NakedPair: changes = NakedPairStrategy.Instance.Perform(board); break;
-				case SolvingStrategyType.HiddenPair: changes = HiddenPairStrategy.Instance.Perform(board); break;
-				case SolvingStrategyType.PointingPair: changes = PointingPairStrategy.Instance.Perform(board); break;
+				case SolvingStrategyType.Backtracking: changes = BacktrackingStrategy.Instance.Perform(grid); break;
+				case SolvingStrategyType.NakedSingle: changes = NakedSingleStrategy.Instance.Perform(grid); break;
+				case SolvingStrategyType.HiddenSingle: changes = HiddenSingleStrategy.Instance.Perform(grid); break;
+				case SolvingStrategyType.NakedPair: changes = NakedPairStrategy.Instance.Perform(grid); break;
+				case SolvingStrategyType.HiddenPair: changes = HiddenPairStrategy.Instance.Perform(grid); break;
+				case SolvingStrategyType.PointingPair: changes = PointingPairStrategy.Instance.Perform(grid); break;
 				default:
 					throw new ArgumentOutOfRangeException("action");
 			}

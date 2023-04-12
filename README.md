@@ -6,7 +6,7 @@
 - Human solving algorithms.
 - Computer solving 'Backtracking' algorithm.
 
-All algorithms are implemented for general Sudoku (not only 9x9), but GUI and board loader support only 9x9 currently.
+All algorithms are implemented for general Sudoku (not only 9x9), but GUI and grid loader support only 9x9 currently.
 
 ## Human solving algorithms:
 

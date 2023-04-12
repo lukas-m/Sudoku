@@ -14,10 +14,10 @@ namespace Sudoku.Strategies
 		/// If a segment has a candidate in one cell only,
 		/// then this cell contains that value.
 		/// </summary>
-		public List<Cell> Perform(Board board)
+		public List<Cell> Perform(Grid grid)
 		{
 			List<Cell> changes = new List<Cell>();
-			foreach (var seg in board.Segments)
+			foreach (var seg in grid.Segments)
 			{
 				for (int i = Cell.MinValue; i < Cell.MaxValue; i++)
 				{

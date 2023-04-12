@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sudoku
 {
-	public class Board
+	public class Grid
 	{
 		private Cell[,] Matrix { get; }
 
@@ -13,7 +13,7 @@ namespace Sudoku
 		public int Rows { get; }
 		public int Columns { get; }
 
-		public Board(int rows, int columns)
+		public Grid(int rows, int columns)
 		{
 			if (rows != 9 || columns != 9)
 				throw new ArgumentException("Only 9x9 is supported currently.");
@@ -88,9 +88,9 @@ namespace Sudoku
 			}
 		}
 
-		public Cell GetCell(int row, int column)
+		public Cell this[int row, int column]
 		{
-			return Matrix[row, column];
+			get { return Matrix[row, column]; }
 		}
 	}
 }

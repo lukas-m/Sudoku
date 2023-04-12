@@ -17,7 +17,7 @@ namespace Sudoku.Strategies
 		/// Note:
 		/// If intersection is one cell only, then HiddenSingle for this cell can be applied instead.
 		/// </summary>
-		public List<Cell> Perform(Board board)
+		public List<Cell> Perform(Grid grid)
 		{
 			throw new NotImplementedException("Pointing Pair strategy is not implemented yet.");
 		}

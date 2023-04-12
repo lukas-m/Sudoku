@@ -10,18 +10,18 @@ namespace Sudoku.Strategies
 	{
 		internal static readonly ISolvingStrategy Instance = new BacktrackingStrategy();
 
-		public List<Cell> Perform(Board board)
+		public List<Cell> Perform(Grid grid)
 		{
 			List<Cell> changes = new List<Cell>();
-			Backtracking(board, changes);
+			Backtracking(grid, changes);
 			return changes;
 		}
 
-		private static void Backtracking(Board board, List<Cell> changes)
+		private static void Backtracking(Grid grid, List<Cell> changes)
 		{
-			if (Backtrack(board))
+			if (Backtrack(grid))
 			{
-				foreach (var cell in board.Cells)
+				foreach (var cell in grid.Cells)
 				{
 					if (!cell.IsFixed)
 						changes.Add(cell);
@@ -29,10 +29,10 @@ namespace Sudoku.Strategies
 			}
 		}
 
-		public static bool Backtrack(Board board)
+		public static bool Backtrack(Grid grid)
 		{
 			var cells = new List<Cell>();
-			foreach (var cell in board.Cells)
+			foreach (var cell in grid.Cells)
 			{
 				cell.BacktrackingMode = true;
 				cells.Add(cell);
@@ -58,7 +58,7 @@ namespace Sudoku.Strategies
 			}
 			finally
 			{
-				foreach (var cell in board.Cells)
+				foreach (var cell in grid.Cells)
 				{
 					cell.BacktrackingMode = false;
 				}

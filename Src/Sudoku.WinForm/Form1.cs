@@ -12,7 +12,7 @@ namespace Sudoku
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("ConfigureAwait", "ConfigureAwaitEnforcer:ConfigureAwaitEnforcer", Justification = "<Pending>")]
 	public partial class Form1 : Form
 	{
-		Board _board;
+		Grid _grid;
 		Dictionary<Cell, SudokuPanel> _cells;
 		AtomicBool _refreshDisabled;
 		AtomicBool _executing;
@@ -24,22 +24,22 @@ namespace Sudoku
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			_board = new Board(9, 9);
+			_grid = new Grid(9, 9);
 			_cells = new Dictionary<Cell, SudokuPanel>();
 
 			int dy = 0;
-			for (int r = 0; r < _board.Rows; r++)
+			for (int r = 0; r < _grid.Rows; r++)
 			{
 				if (r > 0 && r % 3 == 0)
 					dy += 2;
 
 				int dx = 0;
-				for (int c = 0; c < _board.Columns; c++)
+				for (int c = 0; c < _grid.Columns; c++)
 				{
 					if (c > 0 && c % 3 == 0)
 						dx += 2;
 
-					var p = new SudokuPanel(_board.GetCell(r, c));
+					var p = new SudokuPanel(_grid[r, c]);
 					p.BorderStyle = BorderStyle.FixedSingle;
 					p.BackColor = Color.White;
 					p.Size = new Size(80, 80);
@@ -83,7 +83,7 @@ namespace Sudoku
 				Reset();
 
 				var lines = File.ReadAllLines(path);
-				_board.Load(lines);
+				_grid.Load(lines);
 
 				foreach (var cell in _cells.Values)
 				{
@@ -116,7 +116,7 @@ namespace Sudoku
 		{
 			await Execute(() =>
 			{
-				bool found = BacktrackingStrategy.Backtrack(_board);
+				bool found = BacktrackingStrategy.Backtrack(_grid);
 				if (found)
 					panelBoard.Refresh();
 				else
@@ -127,27 +127,27 @@ namespace Sudoku
 
 		private async void buttonNakedSingle_Click(object sender, EventArgs e)
 		{
-			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.NakedSingle, _board));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.NakedSingle, _grid));
 		}
 
 		private async void buttonHiddenSingle_Click(object sender, EventArgs e)
 		{
-			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.HiddenSingle, _board));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.HiddenSingle, _grid));
 		}
 
 		private async void buttonNakedPair_Click(object sender, EventArgs e)
 		{
-			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.NakedPair, _board));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.NakedPair, _grid));
 		}
 
 		private async void buttonHiddenPair_Click(object sender, EventArgs e)
 		{
-			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.HiddenPair, _board));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.HiddenPair, _grid));
 		}
 
 		private async void buttonPointingPair_Click(object sender, EventArgs e)
 		{
-			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.PointingPair, _board));
+			await Execute(() => SolvingStrategy.Perform(SolvingStrategyType.PointingPair, _grid));
 		}
 
 		#region Execute methods
