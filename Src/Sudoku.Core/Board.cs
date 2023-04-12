@@ -1,62 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sudoku.Strategies;
 
 namespace Sudoku
 {
 	public class Board
 	{
-		public Cell[,] Matrix { get; }
+		private Cell[,] Matrix { get; }
+
 		public List<Cell> Cells { get; }
 		public List<Segment> Segments { get; }
 
-		public Board(int width, int height)
+		public int Rows { get; }
+		public int Columns { get; }
+
+		public Board(int rows, int columns)
 		{
-			if (width != 9 || height != 9)
+			if (rows != 9 || columns != 9)
 				throw new ArgumentException("Only 9x9 is supported currently.");
 
-			Matrix = new Cell[width, height];
+			Rows = rows;
+			Columns = columns;
+			Matrix = new Cell[rows, columns];
 			Cells = new List<Cell>();
 			Segments = new List<Segment>();
 
-			for (int i = 0; i < 9; i++)
+			for (int r = 0; r < rows; r++)
 			{
-				for (int j = 0; j < 9; j++)
+				for (int c = 0; c < columns; c++)
 				{
 					var cell = new Cell();
-					Matrix[i, j] = cell;
+					Matrix[r, c] = cell;
 					Cells.Add(cell);
 				}
 			}
 
-			for (int i = 0; i < 9; i++)
+			for (int i = 0; i < rows; i++)
 			{
+				Segment row = new Segment();
 				Segment column = new Segment();
-				for (int j = 0; j < 9; j++)
+				for (int j = 0; j < columns; j++)
 				{
-					column.Register(Matrix[i, j]);
+					row.Register(Matrix[i, j]);
+					column.Register(Matrix[j, i]);
 				}
 				Segments.Add(column);
-
-				Segment row = new Segment();
-				for (int j = 0; j < 9; j++)
-				{
-					row.Register(Matrix[j, i]);
-				}
 				Segments.Add(row);
 			}
 
-			for (int i = 0; i < 9; i += 3)
+			for (int r = 0; r < 9; r += 3)
 			{
-				for (int j = 0; j < 9; j += 3)
+				for (int c = 0; c < 9; c += 3)
 				{
 					Segment square = new Segment();
 					for (int k = 0; k < 9; k++)
 					{
-						square.Register(Matrix[i + (k % 3), j + (k / 3)]);
+						square.Register(Matrix[r + (k % 3), c + (k / 3)]);
 					}
 					Segments.Add(square);
 				}
@@ -67,8 +65,7 @@ namespace Sudoku
 		{
 			char[] separators = new char[] { ' ', '|' };
 
-			int x = -1;
-			int y = -1;
+			int row = -1;
 			foreach (var rawline in lines)
 			{
 				int idx = rawline.IndexOf('#'); // remove comments
@@ -77,18 +74,23 @@ namespace Sudoku
 				if (line.StartsWith("-") || line.Length == 0)
 					continue;
 
-				x = -1;
-				y++;
+				row++;
+				int column = -1;
 				var values = line.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 				foreach (var value in values)
 				{
-					x++;
+					column++;
 					if (value == ".")
 						continue;
-					Matrix[x, y].Value = int.Parse(value);
-					Matrix[x, y].IsFixed = true;
+					Matrix[row, column].Value = int.Parse(value);
+					Matrix[row, column].IsFixed = true;
 				}
 			}
+		}
+
+		public Cell GetCell(int row, int column)
+		{
+			return Matrix[row, column];
 		}
 	}
 }

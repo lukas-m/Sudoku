@@ -27,22 +27,23 @@ namespace Sudoku
 			_board = new Board(9, 9);
 			_cells = new Dictionary<Cell, SudokuPanel>();
 
-			int dx = 0;
-			for (int i = 0; i < 9; i++)
+			int dy = 0;
+			for (int r = 0; r < _board.Rows; r++)
 			{
-				int dy = 0;
-				if (i > 0 && i % 3 == 0)
-					dx += 2;
-				for (int j = 0; j < 9; j++)
-				{
-					if (j > 0 && j % 3 == 0)
-						dy += 2;
+				if (r > 0 && r % 3 == 0)
+					dy += 2;
 
-					var p = new SudokuPanel(_board.Matrix[i, j]);
+				int dx = 0;
+				for (int c = 0; c < _board.Columns; c++)
+				{
+					if (c > 0 && c % 3 == 0)
+						dx += 2;
+
+					var p = new SudokuPanel(_board.GetCell(r, c));
 					p.BorderStyle = BorderStyle.FixedSingle;
 					p.BackColor = Color.White;
 					p.Size = new Size(80, 80);
-					p.Location = new Point(dx + i * 80, dy + j * 80);
+					p.Location = new Point(dx + c * 80, dy + r * 80);
 					p.Font = new Font(FontFamily.GenericSansSerif, 40);
 					p.Changed += PanelChanged;
 
