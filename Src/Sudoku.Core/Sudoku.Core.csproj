@@ -48,7 +48,6 @@
     <Compile Include="Cell.cs" />
     <Compile Include="Helpers\AtomicBool.cs" />
     <Compile Include="Helpers\DictionaryPool.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Segment.cs" />
     <Compile Include="Strategies\BacktrackingStrategy.cs" />
     <Compile Include="Strategies\HiddenPairStrategy.cs" />
